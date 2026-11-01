@@ -11,99 +11,99 @@ content:
   type: file
   path: data/projects.json
   format: json
-  list: true
   fields:
-  - name: id
-    label: 网址名 Link name
-    type: string
-    required: true
-    description: 小写英文和连字符，例如 no-angle，会出现在网址里，建好后尽量不要改 / Lowercase letters and hyphens, e.g. no-angle. Used in the page address; avoid changing it later.
-  - name: title
-    label: 作品名称 Title
+  - name: works
+    label: 作品列表 Works
     type: object
+    description: 点“Add”新建作品；拖动可以调整顺序 / Click “Add” to add a project; drag to reorder.
+    list:
+      collapsible:
+        collapsed: true
+        summary: '{title} · {title_en} · {year}'
     fields:
-    - name: zh
-      label: 中文
+    - name: title
+      label: 作品名称（中文）Title (Chinese)
       type: string
       required: true
-    - name: en
-      label: English
+    - name: title_en
+      label: 作品名称（英文）Title (English)
       type: string
       required: true
-  - name: year
-    label: 年份 Year
-    type: number
-    required: true
-  - name: category
-    label: 类别 Category
-    type: object
-    fields:
-    - name: zh
-      label: 中文
+      description: 网页地址会根据英文名称自动生成 / The page address is created automatically from the English title.
+    - name: year
+      label: 年份 Year
+      type: number
+      required: true
+    - name: category
+      label: 类别 Category
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+    - name: tags
+      label: 标签 Tags
+      type: object
+      list: true
+      description: 作品页按这些标签筛选，相同的标签要写得一样 / Used for the filters on the Works page; spell the same tag the same way each time.
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+    - name: cover
+      label: 封面图 Cover image
+      type: image
+      options:
+        path: images/projects
+      description: 首页轮播的第一张，也是作品页的缩略图。建议竖版 2:3 / First image in the home carousel and the thumbnail on the Works page. Portrait 2:3 recommended.
+    - name: images
+      label: 更多图片 More images
+      type: image
+      options:
+        path: images/projects
+      list: true
+      description: 按顺序显示，可拖动排序 / Shown in this order; drag to reorder.
+    - name: video
+      label: 视频链接 Video link
       type: string
-    - name: en
-      label: English
-      type: string
-  - name: tags
-    label: 标签 Tags
-    type: object
-    list: true
-    description: 作品页按这些标签筛选，相同的标签要写得一样 / Used for the filters on the Works page; spell the same tag the same way each time.
-    fields:
-    - name: zh
-      label: 中文
-      type: string
-    - name: en
-      label: English
-      type: string
-  - name: cover
-    label: 封面图 Cover image
-    type: image
-    options:
-      path: images/projects
-    description: 首页轮播的第一张，也是作品页的缩略图。建议竖版 2:3 / First image in the home carousel and the thumbnail on the Works page. Portrait 2:3 recommended.
-  - name: images
-    label: 更多图片 More images
-    type: image
-    options:
-      path: images/projects
-    list: true
-    description: 按顺序显示，可拖动排序 / Shown in this order; drag to reorder.
-  - name: video
-    label: 视频链接 Video link
-    type: string
-    description: YouTube 或 Vimeo 链接，没有就留空 / A YouTube or Vimeo link, or leave empty.
-  - name: summary
-    label: 一句话简介 Short summary
-    type: object
-    fields:
-    - name: zh
-      label: 中文
-      type: text
-    - name: en
-      label: English
-      type: text
-  - name: description
-    label: 项目介绍 Description
-    type: object
-    fields:
-    - name: zh
-      label: 中文
-      type: text
-    - name: en
-      label: English
-      type: text
-    description: 空一行就是分段 / Leave a blank line between paragraphs.
-  - name: materials
-    label: 使用材料 Materials
-    type: object
-    fields:
-    - name: zh
-      label: 中文
-      type: string
-    - name: en
-      label: English
-      type: string
+      description: YouTube 或 Vimeo 链接，没有就留空 / A YouTube or Vimeo link, or leave empty.
+    - name: summary
+      label: 一句话简介 Short summary
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: text
+      - name: en
+        label: English
+        type: text
+    - name: description
+      label: 项目介绍 Description
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: text
+      - name: en
+        label: English
+        type: text
+      description: 空一行就是分段 / Leave a blank line between paragraphs.
+    - name: materials
+      label: 使用材料 Materials
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
 - name: materials
   label: 材料库 Material Library
   type: file
@@ -331,7 +331,7 @@ content:
     label: 首页作品顺序 Home page order
     type: string
     list: true
-    description: 按顺序填作品的网址名（例如 no-angle）；留空则按年份从新到旧 / Project link names in order (e.g. no-angle); leave empty to sort newest first.
+    description: 按顺序填作品的英文名称；留空则按年份从新到旧 / English project titles in order; leave empty to sort newest first.
   - name: research
     label: 研究页 Research page
     type: object

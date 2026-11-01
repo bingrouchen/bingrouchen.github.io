@@ -1,96 +1,92 @@
-[
-  {
-    "id": "no-angle",
-    "title": {
-      "zh": "NO ANGLE",
-      "en": "NO ANGLE"
-    },
-    "year": 2019,
-    "category": {
-      "zh": "服装系列",
-      "en": "Fashion Collection"
-    },
-    "tags": [
-      {
+{
+  "works": [
+    {
+      "title": "NO ANGLE",
+      "title_en": "NO ANGLE",
+      "year": 2019,
+      "category": {
         "zh": "服装系列",
         "en": "Fashion Collection"
       },
-      {
-        "zh": "材料",
-        "en": "Material"
+      "tags": [
+        {
+          "zh": "服装系列",
+          "en": "Fashion Collection"
+        },
+        {
+          "zh": "材料",
+          "en": "Material"
+        },
+        {
+          "zh": "编织",
+          "en": "Knitting"
+        }
+      ],
+      "cover": "/images/projects/no-angle/cover.jpg",
+      "images": [
+        "/images/projects/no-angle/01.jpg",
+        "/images/projects/no-angle/02.jpg",
+        "/images/projects/no-angle/03.jpg",
+        "/images/projects/no-angle/04.jpg",
+        "/images/projects/no-angle/05.jpg"
+      ],
+      "video": "",
+      "summary": {
+        "zh": "用橡皮圈、金属环和透明亚克力球编织成的可穿戴雕塑。",
+        "en": "Wearable sculpture knitted from rubber bands, metal rings and clear acrylic spheres."
       },
-      {
-        "zh": "编织",
-        "en": "Knitting"
+      "description": {
+        "zh": "NO ANGLE 其实是一种新的角度，打破了服装设计固有的定义，以及不同材料使用性质之间的分界线。\n\n这件作品以创意编织的方式，把普通橡皮圈、金属环和透明亚克力球这些“非服用”材料编织成可穿戴的服装。它既优雅又极具雕塑感，带来一种与众不同的美的体验，也为服装设计打开了新的可能。",
+        "en": "NO ANGLE is, in fact, a new angle, one that breaks the fixed definitions of fashion design and the boundaries between how different materials are used.\n\nThrough creative knitting, ordinary rubber bands, metal rings and clear acrylic spheres, materials never meant to be worn, are transformed into wearable garments. Both elegant and strongly sculptural, the work offers a distinctive experience of beauty and opens up new possibilities for fashion design."
+      },
+      "materials": {
+        "zh": "橡皮圈、金属环、透明亚克力球",
+        "en": "Rubber bands, metal rings, clear acrylic spheres"
       }
-    ],
-    "cover": "/images/projects/no-angle/cover.jpg",
-    "images": [
-      "/images/projects/no-angle/01.jpg",
-      "/images/projects/no-angle/02.jpg",
-      "/images/projects/no-angle/03.jpg",
-      "/images/projects/no-angle/04.jpg",
-      "/images/projects/no-angle/05.jpg"
-    ],
-    "video": "",
-    "summary": {
-      "zh": "用橡皮圈、金属环和透明亚克力球编织成的可穿戴雕塑。",
-      "en": "Wearable sculpture knitted from rubber bands, metal rings and clear acrylic spheres."
     },
-    "description": {
-      "zh": "NO ANGLE 其实是一种新的角度，打破了服装设计固有的定义，以及不同材料使用性质之间的分界线。\n\n这件作品以创意编织的方式，把普通橡皮圈、金属环和透明亚克力球这些“非服用”材料编织成可穿戴的服装。它既优雅又极具雕塑感，带来一种与众不同的美的体验，也为服装设计打开了新的可能。",
-      "en": "NO ANGLE is, in fact, a new angle, one that breaks the fixed definitions of fashion design and the boundaries between how different materials are used.\n\nThrough creative knitting, ordinary rubber bands, metal rings and clear acrylic spheres, materials never meant to be worn, are transformed into wearable garments. Both elegant and strongly sculptural, the work offers a distinctive experience of beauty and opens up new possibilities for fashion design."
-    },
-    "materials": {
-      "zh": "橡皮圈、金属环、透明亚克力球",
-      "en": "Rubber bands, metal rings, clear acrylic spheres"
-    }
-  },
-  {
-    "id": "the-shape-of-old-memory",
-    "title": {
-      "zh": "陈迹·新渊",
-      "en": "The Shape of Old Memory"
-    },
-    "year": 2022,
-    "category": {
-      "zh": "服装系列",
-      "en": "Fashion Collection"
-    },
-    "tags": [
-      {
+    {
+      "title": "陈迹·新渊",
+      "title_en": "The Shape of Old Memory",
+      "year": 2022,
+      "category": {
         "zh": "服装系列",
         "en": "Fashion Collection"
       },
-      {
-        "zh": "材料",
-        "en": "Material"
+      "tags": [
+        {
+          "zh": "服装系列",
+          "en": "Fashion Collection"
+        },
+        {
+          "zh": "材料",
+          "en": "Material"
+        },
+        {
+          "zh": "传统工艺",
+          "en": "Traditional Craft"
+        }
+      ],
+      "cover": "/images/projects/the-shape-of-old-memory/cover.jpg",
+      "images": [
+        "/images/projects/the-shape-of-old-memory/01.jpg",
+        "/images/projects/the-shape-of-old-memory/02.jpg",
+        "/images/projects/the-shape-of-old-memory/03.jpg",
+        "/images/projects/the-shape-of-old-memory/04.jpg",
+        "/images/projects/the-shape-of-old-memory/05.jpg"
+      ],
+      "video": "",
+      "summary": {
+        "zh": "以金属珠链与环氧树脂“打捞”潮绣图案的毕业系列。",
+        "en": "A graduation collection that “salvages” Chaozhou embroidery through metal bead chains and epoxy resin."
       },
-      {
-        "zh": "传统工艺",
-        "en": "Traditional Craft"
+      "description": {
+        "zh": "传统工艺就像沉在深海里的宝藏：我们知道它存在，也知道它珍贵，却很少真正触碰到它。\n\n在这个毕业系列中，我把潮绣作为“打捞”的对象，提取经典潮绣作品中的人物图案进行拆解重组，再用金属珠链掐绕出图案的残迹，封存在环氧树脂滴胶之下。潮绣元素因此呈现出似近似远、看得见却摸不着的状态，隐喻它在当代大多数人心中的位置。\n\n这个系列并不追求复刻传统，而是探索传统工艺在当代设计中新的可能，赋予它新的生命力。",
+        "en": "Traditional craft is like treasure sunk in the deep sea: we sense its presence and its value, yet rarely reach it.\n\nIn this graduation collection, I set out to “salvage” Chaozhou embroidery. I extracted figurative motifs from classic Chaozhou embroidery works, deconstructed and recomposed them, then coiled metal bead chains into traces of these patterns and sealed them beneath epoxy resin. The embroidery appears near yet distant, visible yet out of reach, a metaphor for how it exists in most people’s minds today.\n\nRather than replicating tradition, the collection explores how traditional craft can be reimagined in contemporary design, giving it new life."
+      },
+      "materials": {
+        "zh": "金属珠链、环氧树脂滴胶",
+        "en": "Metal bead chains, epoxy resin"
       }
-    ],
-    "cover": "/images/projects/the-shape-of-old-memory/cover.jpg",
-    "images": [
-      "/images/projects/the-shape-of-old-memory/01.jpg",
-      "/images/projects/the-shape-of-old-memory/02.jpg",
-      "/images/projects/the-shape-of-old-memory/03.jpg",
-      "/images/projects/the-shape-of-old-memory/04.jpg",
-      "/images/projects/the-shape-of-old-memory/05.jpg"
-    ],
-    "video": "",
-    "summary": {
-      "zh": "以金属珠链与环氧树脂“打捞”潮绣图案的毕业系列。",
-      "en": "A graduation collection that “salvages” Chaozhou embroidery through metal bead chains and epoxy resin."
-    },
-    "description": {
-      "zh": "传统工艺就像沉在深海里的宝藏：我们知道它存在，也知道它珍贵，却很少真正触碰到它。\n\n在这个毕业系列中，我把潮绣作为“打捞”的对象，提取经典潮绣作品中的人物图案进行拆解重组，再用金属珠链掐绕出图案的残迹，封存在环氧树脂滴胶之下。潮绣元素因此呈现出似近似远、看得见却摸不着的状态，隐喻它在当代大多数人心中的位置。\n\n这个系列并不追求复刻传统，而是探索传统工艺在当代设计中新的可能，赋予它新的生命力。",
-      "en": "Traditional craft is like treasure sunk in the deep sea: we sense its presence and its value, yet rarely reach it.\n\nIn this graduation collection, I set out to “salvage” Chaozhou embroidery. I extracted figurative motifs from classic Chaozhou embroidery works, deconstructed and recomposed them, then coiled metal bead chains into traces of these patterns and sealed them beneath epoxy resin. The embroidery appears near yet distant, visible yet out of reach, a metaphor for how it exists in most people’s minds today.\n\nRather than replicating tradition, the collection explores how traditional craft can be reimagined in contemporary design, giving it new life."
-    },
-    "materials": {
-      "zh": "金属珠链、环氧树脂滴胶",
-      "en": "Metal bead chains, epoxy resin"
     }
-  }
-]
+  ]
+}

@@ -10,17 +10,20 @@
   }
   function slug(x) { return String(x || "").toLowerCase().trim().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, ""); }
   function build(site, projects, materials, about) {
-    var s = site; s.projects = projects || []; s.materials = materials || []; s.about = about || {};
+    var s = site; s.projects = (projects && projects.works) || projects || []; s.materials = materials || []; s.about = about || {};
     s.contact = s.contact || {}; s.research = s.research || {};
     /* 标签直接写在每个项目里，这里汇总成筛选按钮 / tags live on each project; collect them for the filters */
     s.tags = {};
     s.projects.forEach(function (p, i) {
+      /* 作品名称：中文 title + 英文 title_en / project title: Chinese "title" + English "title_en" */
+      if (typeof p.title === "string" || p.title_en) p.title = { zh: p.title || p.title_en || "", en: p.title_en || p.title || "" };
       p.id = p.id || slug(p.title && p.title.en) || "project-" + (i + 1);
       p.images = (p.images || []).filter(Boolean);
       p.tags = (p.tags || []).map(function (tg) {
         var k = slug(tg.en || tg.zh); if (k) s.tags[k] = s.tags[k] || tg; return k;
       }).filter(Boolean);
     });
+    s.featured = (s.featured || []).map(function (f) { return slug(f); });
     return s;
   }
 
@@ -143,7 +146,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.1</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.2</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
