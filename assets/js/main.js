@@ -25,7 +25,7 @@
     });
     s.featured = (s.featured || []).map(function (f) { return slug(f); });
     /* 作品分区：服装系列 / 制作过程（名称可在 Pages CMS 的网站设置里改）
-       Works sections: Fashion Collection / Making Of (names editable in Site settings) */
+       Works sections: Fashion Collection / Process (names editable in Site settings) */
     s.sections = s.sections || {};
     ["fashion", "process"].forEach(function (k) {
       var v = s.sections[k] || {};
@@ -39,7 +39,7 @@
   var UI = {
     works:      { zh: "作品", en: "Works" },
     fashion:    { zh: "服装系列", en: "Fashion Collection" },
-    process:    { zh: "制作过程 / 花絮", en: "Making Of" },
+    process:    { zh: "制作过程 / 花絮", en: "Process" },
     soon:       { zh: "内容即将更新。", en: "Coming soon." },
     research:   { zh: "研究", en: "Research" },
     about:      { zh: "关于", en: "About" },
@@ -170,7 +170,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.3</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.4</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
