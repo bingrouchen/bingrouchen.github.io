@@ -23,14 +23,8 @@
           "en": "Knitting"
         }
       ],
-      "cover": "/images/projects/no-angle/cover.jpg",
-      "images": [
-        "/images/projects/no-angle/01.jpg",
-        "/images/projects/no-angle/02.jpg",
-        "/images/projects/no-angle/03.jpg",
-        "/images/projects/no-angle/04.jpg",
-        "/images/projects/no-angle/05.jpg"
-      ],
+      "cover": "",
+      "images": [],
       "video": "",
       "summary": {
         "zh": "用橡皮圈、金属环和透明亚克力球编织成的可穿戴雕塑。",
@@ -69,14 +63,8 @@
           "en": "Traditional Craft"
         }
       ],
-      "cover": "/images/projects/the-shape-of-old-memory/cover.jpg",
-      "images": [
-        "/images/projects/the-shape-of-old-memory/01.jpg",
-        "/images/projects/the-shape-of-old-memory/02.jpg",
-        "/images/projects/the-shape-of-old-memory/03.jpg",
-        "/images/projects/the-shape-of-old-memory/04.jpg",
-        "/images/projects/the-shape-of-old-memory/05.jpg"
-      ],
+      "cover": "",
+      "images": [],
       "video": "",
       "summary": {
         "zh": "以金属珠链与环氧树脂“打捞”潮绣图案的毕业系列。",

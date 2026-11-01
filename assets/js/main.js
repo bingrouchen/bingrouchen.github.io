@@ -108,9 +108,10 @@
 
   /* 图片：文件还没上传时显示灰色占位 / Grey placeholder until the image is uploaded */
   function img(src, alt, cls) {
+    /* 还没有图片时显示灰色占位框 / grey placeholder when there's no image yet */
+    if (!src) return '<div class="ph missing ' + (cls || "") + '"></div>';
     return '<div class="ph ' + (cls || "") + '"><img src="' + esc(src) + '" alt="' + esc(alt) +
-      '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()">' +
-      '<span class="ph-label">' + esc(src.split("/").slice(-2).join("/")) + "</span></div>";
+      '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>';
   }
 
   function videoEmbed(url) {
@@ -177,7 +178,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.5</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.6</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -201,7 +202,8 @@
       /* 每个项目一组可左右翻的图片，下面是项目名称链接
          One swipeable row of images per project, with the project title link below */
       return feat.map(function (p) {
-          var pics = [p.cover].concat(p.images || []);
+          var pics = [p.cover].concat(p.images || []).filter(Boolean);
+          while (pics.length < 4) pics.push("");   /* 图片不够时用占位框补齐一排 / pad the row with placeholders */
           return '<section class="showcase">' +
             '<div class="slider"><div class="track">' + pics.map(function (src) {
               return '<a class="slide" href="' + projectUrl(p.id) + '">' + img(src, t(p.title), "") + "</a>";
