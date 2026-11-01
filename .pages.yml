@@ -1,0 +1,392 @@
+# Pages CMS 配置 / Pages CMS configuration
+# 定义后台每个输入框；一般不需要改 / Defines every field in the editor; normally no need to edit.
+# Docs: https://pagescms.org/docs
+
+media:
+  input: images
+  output: /images
+content:
+- name: projects
+  label: 作品 Works
+  type: file
+  path: data/projects.json
+  format: json
+  list: true
+  fields:
+  - name: id
+    label: 网址名 Link name
+    type: string
+    required: true
+    description: 小写英文和连字符，例如 no-angle，会出现在网址里，建好后尽量不要改 / Lowercase letters and hyphens, e.g. no-angle. Used in the page address; avoid changing it later.
+  - name: title
+    label: 作品名称 Title
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+      required: true
+    - name: en
+      label: English
+      type: string
+      required: true
+  - name: year
+    label: 年份 Year
+    type: number
+    required: true
+  - name: category
+    label: 类别 Category
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+  - name: tags
+    label: 标签 Tags
+    type: object
+    list: true
+    description: 作品页按这些标签筛选，相同的标签要写得一样 / Used for the filters on the Works page; spell the same tag the same way each time.
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+  - name: cover
+    label: 封面图 Cover image
+    type: image
+    options:
+      path: images/projects
+    description: 首页轮播的第一张，也是作品页的缩略图。建议竖版 2:3 / First image in the home carousel and the thumbnail on the Works page. Portrait 2:3 recommended.
+  - name: images
+    label: 更多图片 More images
+    type: image
+    options:
+      path: images/projects
+    list: true
+    description: 按顺序显示，可拖动排序 / Shown in this order; drag to reorder.
+  - name: video
+    label: 视频链接 Video link
+    type: string
+    description: YouTube 或 Vimeo 链接，没有就留空 / A YouTube or Vimeo link, or leave empty.
+  - name: summary
+    label: 一句话简介 Short summary
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+  - name: description
+    label: 项目介绍 Description
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+    description: 空一行就是分段 / Leave a blank line between paragraphs.
+  - name: materials
+    label: 使用材料 Materials
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+- name: materials
+  label: 材料库 Material Library
+  type: file
+  path: data/materials.json
+  format: json
+  list: true
+  fields:
+  - name: id
+    label: 编号 ID
+    type: string
+    required: true
+    description: 例如 M-001 / e.g. M-001
+  - name: sample
+    label: 示例条目 Sample entry
+    type: boolean
+    description: 勾上会显示“示例”标签；真实材料不要勾 / Shows a “Sample” badge; leave off for real materials.
+  - name: name
+    label: 材料名称 Name
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+      required: true
+    - name: en
+      label: English
+      type: string
+      required: true
+  - name: category
+    label: 类别 Category
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+  - name: image
+    label: 材料照片 Photo
+    type: image
+    options:
+      path: images/materials
+  - name: collected
+    label: 收集时间 Collected
+    type: string
+    description: 例如 2026-03 / e.g. 2026-03
+  - name: location
+    label: 收集地点 Location
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+  - name: source
+    label: 来源 Source
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+  - name: composition
+    label: 成分 Composition
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+  - name: properties
+    label: 特性 Properties
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+  - name: processing
+    label: 加工方式 Processing
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+  - name: endOfLife
+    label: 循环 / 生命周期末端 Circularity / end of life
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+  - name: notes
+    label: 备注 Notes
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+- name: about
+  label: 关于 About
+  type: file
+  path: data/about.json
+  format: json
+  fields:
+  - name: bio
+    label: 个人简介 Bio
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+    description: 空一行就是分段 / Leave a blank line between paragraphs.
+  - name: phd
+    label: 博士课题 PhD research
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+    - name: en
+      label: English
+      type: string
+  - name: education
+    label: 教育背景 Education
+    type: object
+    list: true
+    fields:
+    - name: year
+      label: 年份 Year
+      type: string
+      description: 例如 2019–2022 / e.g. 2019–2022
+    - name: text
+      label: 内容 Entry
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+  - name: exhibitions
+    label: 展览与奖项 Exhibitions & Awards
+    type: object
+    list: true
+    fields:
+    - name: year
+      label: 年份 Year
+      type: string
+    - name: text
+      label: 内容 Entry
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+- name: site
+  label: 网站设置 Site settings
+  type: file
+  path: data/site.json
+  format: json
+  fields:
+  - name: name
+    label: 名字 Name
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: string
+      required: true
+    - name: en
+      label: English
+      type: string
+      required: true
+  - name: intro
+    label: 一句话介绍 Introduction
+    type: object
+    fields:
+    - name: zh
+      label: 中文
+      type: text
+    - name: en
+      label: English
+      type: text
+  - name: contact
+    label: 联系方式 Contact
+    type: object
+    description: 不想公开的留空 / Leave empty to hide.
+    fields:
+    - name: email
+      label: 邮箱 Email
+      type: string
+    - name: instagram
+      label: Instagram 链接 link
+      type: string
+    - name: linkedin
+      label: LinkedIn 链接 link
+      type: string
+  - name: featured
+    label: 首页作品顺序 Home page order
+    type: string
+    list: true
+    description: 按顺序填作品的网址名（例如 no-angle）；留空则按年份从新到旧 / Project link names in order (e.g. no-angle); leave empty to sort newest first.
+  - name: research
+    label: 研究页 Research page
+    type: object
+    fields:
+    - name: title
+      label: 标题 Title
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+    - name: intro
+      label: 介绍 Introduction
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: text
+      - name: en
+        label: English
+        type: text
+  - name: splash
+    label: 开屏 Intro screen
+    type: object
+    fields:
+    - name: enabled
+      label: 显示开屏 Show intro
+      type: boolean
+    - name: image
+      label: 开屏照片 Intro photo
+      type: image
+      options:
+        path: images
+    - name: video
+      label: 开屏视频（可选）Intro video (optional)
+      type: string
+      description: 例如 /images/splash.mp4，留空则用照片 / e.g. /images/splash.mp4; leave empty to use the photo.
+    - name: dimDelay
+      label: 开始变暗前停留（秒）Seconds before darkening
+      type: number
+    - name: dimTime
+      label: 变暗变模糊用时（秒）Darken & blur duration (s)
+      type: number
+    - name: dim
+      label: 黑色深度 0–1 Darkness 0–1
+      type: number
+    - name: blur
+      label: 模糊程度（像素）Blur (px)
+      type: number
+    - name: sewDelay
+      label: 开始缝名字（秒）Seconds before sewing
+      type: number
+    - name: seconds
+      label: 开屏总时长（秒）Total length (s)
+      type: number
