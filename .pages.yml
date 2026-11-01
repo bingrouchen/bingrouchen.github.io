@@ -264,7 +264,7 @@ content:
   format: json
   fields:
   - name: bio
-    label: 个人简介 Bio
+    label: '关于我：个人简介 About Me: bio'
     type: object
     fields:
     - name: zh
@@ -275,7 +275,7 @@ content:
       type: text
     description: 空一行就是分段 / Leave a blank line between paragraphs.
   - name: phd
-    label: 博士课题 PhD research
+    label: '关于我：博士课题 About Me: PhD research'
     type: object
     fields:
     - name: zh
@@ -285,7 +285,7 @@ content:
       label: English
       type: string
   - name: education
-    label: 教育背景 Education
+    label: '关于我：教育背景 About Me: education'
     type: object
     list: true
     fields:
@@ -303,14 +303,42 @@ content:
       - name: en
         label: English
         type: string
-  - name: exhibitions
-    label: 展览与奖项 Exhibitions & Awards
+  - name: awards
+    label: 竞赛与奖项 Competitions & Awards
     type: object
-    list: true
+    description: 每条一项比赛或奖项，按你想要的顺序排列 / One competition or award per entry, in the order you want.
+    list:
+      collapsible:
+        collapsed: true
+        summary: '{year}'
     fields:
     - name: year
       label: 年份 Year
       type: string
+      description: 例如 2023 或 2019–2022 / e.g. 2023 or 2019–2022
+    - name: text
+      label: 内容 Entry
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+  - name: exhibitions
+    label: 展览 Exhibitions
+    type: object
+    description: 每条一个展览 / One exhibition per entry.
+    list:
+      collapsible:
+        collapsed: true
+        summary: '{year}'
+    fields:
+    - name: year
+      label: 年份 Year
+      type: string
+      description: 例如 2023 或 2019–2022 / e.g. 2023 or 2019–2022
     - name: text
       label: 内容 Entry
       type: object
@@ -350,9 +378,9 @@ content:
       label: English
       type: text
   - name: contact
-    label: 联系方式 Contact
+    label: 联系我 Contact Me
     type: object
-    description: 不想公开的留空 / Leave empty to hide.
+    description: 显示在关于页的“联系我”和页脚；不想公开的留空 / Shown in Contact Me on the About page and in the footer; leave empty to hide.
     fields:
     - name: email
       label: 邮箱 Email

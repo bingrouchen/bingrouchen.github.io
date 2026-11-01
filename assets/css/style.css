@@ -353,3 +353,25 @@ body.no-scroll { overflow: hidden; }
   .project-body .facts, .project-body .prose { grid-column: 1; }
 }
 .project-body .prose p:first-child { padding-top: 10px; }   /* 第一行与左边“2019”同一基线 / first line on the same baseline as “2019” */
+
+/* ---------- 关于页：四个分区，和作品页一样用三列网格
+   About page: four parts on the same three-column grid as project pages ---------- */
+.about-part { --col-gap: clamp(12px, 1.6vw, 20px); display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--col-gap);
+  padding: clamp(28px, 4vw, 44px) 0; border-top: 1px dashed var(--ink); scroll-margin-top: 24px; }
+.about-part:last-child { border-bottom: 1px dashed var(--ink); }
+.part-name { grid-column: 1; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); padding-top: 3px; }
+.part-body { grid-column: 2 / span 2; font-size: 14px; }
+.about-bio { font-size: 16px; line-height: 1.8; max-width: none; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.sub-name { margin-top: 32px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .6; padding-bottom: 8px; }
+.cv-list { list-style: none; border-top: 1px solid var(--line); }
+.cv-list li { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); line-height: 1.6; }
+.cv-list li span:first-child { opacity: .6; }
+.contact-list a { border-bottom: 1px solid var(--line); justify-self: start; }
+.contact-list a:hover { border-bottom-color: var(--ink); }
+.soon { opacity: .55; padding-top: 2px; }
+.menu-right { left: auto; right: 0; }
+.menu-right > ul { margin-left: 0; margin-right: -18px; }
+@media (max-width: 720px) {
+  .about-part { grid-template-columns: 1fr; row-gap: 16px; }
+  .part-name, .part-body { grid-column: 1; }
+}

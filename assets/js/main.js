@@ -62,7 +62,10 @@
     notFound:   { zh: "没有找到这个项目。", en: "Project not found." },
     contact:    { zh: "联系", en: "Contact" },
     education:  { zh: "教育背景", en: "Education" },
-    exhibitions:{ zh: "展览与奖项", en: "Exhibitions & Awards" },
+    exhibitions:{ zh: "展览", en: "Exhibitions" },
+    aboutMe:    { zh: "关于我", en: "About Me" },
+    awards:     { zh: "竞赛与奖项", en: "Competitions & Awards" },
+    contactMe:  { zh: "联系我", en: "Contact Me" },
     sample:     { zh: "示例", en: "Sample" },
     collected:  { zh: "收集时间", en: "Collected" },
     location:   { zh: "收集地点", en: "Location" },
@@ -159,8 +162,17 @@
       '<nav class="nav">' + links.map(function (l) {
         var on = page === l[0] || (page === "project" && l[0] === "works");
         var a = '<a href="' + l[1] + '"' + (on ? ' class="active" aria-current="page"' : "") + ">" + stitch(t(UI[l[0]])) + '<i class="bar"></i></a>';
-        return l[0] === "works" ? '<div class="nav-item has-menu">' + a + worksMenu() + "</div>" : a;
+        if (l[0] === "works") return '<div class="nav-item has-menu">' + a + worksMenu() + "</div>";
+        if (l[0] === "about") return '<div class="nav-item has-menu">' + a + aboutMenu() + "</div>";
+        return a;
       }).join("") + "</nav></div>";
+  }
+  /* ABOUT 的四个分区 / the four parts of the About page */
+  var ABOUT_PARTS = [["me", "aboutMe"], ["awards", "awards"], ["exhibitions", "exhibitions"], ["contact", "contactMe"]];
+  function aboutMenu() {
+    return '<div class="menu menu-right"><ul>' + ABOUT_PARTS.map(function (x) {
+      return '<li><a class="menu-head" href="about.html#' + x[0] + '">' + t(UI[x[1]]) + "</a></li>";
+    }).join("") + "</ul></div>";
   }
   /* 鼠标移到 WORKS 时出现的下拉菜单 / dropdown shown when hovering WORKS */
   function worksMenu() {
@@ -179,7 +191,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.9</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.0</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -319,22 +331,30 @@
 
     about: function () {
       var a = S.about, c = S.contact;
-      function list(title, rows) {
-        if (!rows || !rows.length) return "";
-        return '<section class="cv"><h2>' + t(title) + "</h2><ul>" + rows.map(function (r) {
-          return "<li><span>" + esc(r.year) + "</span><span>" + esc(t(r.text)) + "</span></li>";
-        }).join("") + "</ul></section>";
+      function rows(list) {
+        list = (list || []).filter(function (r) { return r && (r.year || t(r.text)); });
+        if (!list.length) return '<p class="soon">' + t(UI.soon) + "</p>";
+        return '<ul class="cv-list">' + list.map(function (r) {
+          return "<li><span>" + esc(r.year || "") + "</span><span>" + esc(t(r.text)) + "</span></li>";
+        }).join("") + "</ul>";
+      }
+      function part(id, title, body) {
+        return '<section class="about-part" id="' + id + '"><h2 class="part-name">' + t(title) + '</h2><div class="part-body">' + body + "</div></section>";
       }
       var contacts = [];
-      if (c.email) contacts.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
-      if (c.instagram) contacts.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
-      if (c.linkedin) contacts.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-      return '<section class="page-head"><h1>' + t(UI.about) + "</h1></section>" +
-        '<div class="about"><div class="prose big">' + paras(t(a.bio)) + "<p>" + esc(t(a.phd)) + "</p></div>" +
-        '<div class="about-side">' + list(UI.education, a.education) + list(UI.exhibitions, a.exhibitions) +
-        (contacts.length ? '<section class="cv"><h2>' + t(UI.contact) + '</h2><p class="contact">' + contacts.join("<br>") + "</p></section>" : "") +
-        "</div></div>";
+      if (c.email) contacts.push('<li><span>Email</span><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a></li>");
+      if (c.instagram) contacts.push('<li><span>Instagram</span><a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">' + esc(c.instagram.replace(/^https?:\/\/(www\.)?/, "")) + "</a></li>");
+      if (c.linkedin) contacts.push('<li><span>LinkedIn</span><a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">' + esc(c.linkedin.replace(/^https?:\/\/(www\.)?/, "")) + "</a></li>");
+      var me = '<div class="prose about-bio">' + paras(t(a.bio)) + (t(a.phd) ? "<p>" + esc(t(a.phd)) + "</p>" : "") + "</div>" +
+        ((a.education || []).length ? '<h3 class="sub-name">' + t(UI.education) + "</h3>" + rows(a.education) : "");
+      return '<section class="page-head"><h1>' + t(UI.about) + "</h1>" +
+        '<div class="filters">' + ABOUT_PARTS.map(function (x) { return '<a href="#' + x[0] + '">' + t(UI[x[1]]) + "</a>"; }).join("") + "</div></section>" +
+        part("me", UI.aboutMe, me) +
+        part("awards", UI.awards, rows(a.awards)) +
+        part("exhibitions", UI.exhibitions, rows(a.exhibitions)) +
+        part("contact", UI.contactMe, contacts.length ? '<ul class="cv-list contact-list">' + contacts.join("") + "</ul>" : '<p class="soon">' + t(UI.soon) + "</p>");
     }
+
   };
 
   /* ---------- 渲染 / Render ---------- */
@@ -437,10 +457,18 @@
 
   var _render = render;
   render = function () { _render(); wireSlider(); wireLightbox(); fitStitches(); };
+  /* 内容是加载后才画出来的，所以要手动跳到 #分区 / content is drawn after loading, so jump to the #section by hand */
+  function jumpToHash() {
+    if (!location.hash) return;
+    var el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (el) el.scrollIntoView({ block: "start" });
+  }
+  window.addEventListener("hashchange", jumpToHash);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStitches);
   Promise.all(["site", "projects", "materials", "about"].map(load)).then(function (d) {
     S = build(d[0], d[1], d[2], d[3]);
     render();
+    jumpToHash();
     splash();
   }).catch(function () {
     document.getElementById("app").innerHTML = '<p class="empty">' +
