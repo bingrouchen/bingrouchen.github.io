@@ -47,8 +47,10 @@ h1, h2, h3 { font-weight: 400; line-height: 1.15; letter-spacing: -0.01em; }
 .stitch { display: block; overflow: visible; height: var(--h); width: auto; }
 .stitch text {
   font-family: var(--font); font-size: 100px; font-weight: 600; letter-spacing: 0;
-  fill: none; stroke: var(--stitch); stroke-width: 2.4; stroke-dasharray: var(--dash, 9 5);
-  stroke-linejoin: round; transition: stroke .2s, fill .2s;
+  /* 先画虚线、再用背景色填充字的内部，盖住字形内部多余的线
+     Stroke first, then fill the inside with the background colour to hide stray inner lines */
+  fill: var(--bg); stroke: var(--stitch); stroke-width: 4.8; paint-order: stroke fill;
+  stroke-dasharray: var(--dash, 9 5); stroke-linejoin: round; transition: stroke .2s;
 }
 .brand { display: block; --h: var(--name-h); }
 .nav { display: flex; gap: clamp(8px, 1vw, 12px); --h: calc(var(--name-h) - var(--nav-gap) - var(--bar)); }
