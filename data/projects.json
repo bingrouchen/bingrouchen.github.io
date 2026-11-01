@@ -36,7 +36,25 @@
       "materials": {
         "zh": "橡皮圈、金属环、透明亚克力球",
         "en": "Rubber bands, metal rings, clear acrylic spheres"
-      }
+      },
+      "looks": [
+        {
+          "name": "Look 1",
+          "images": []
+        },
+        {
+          "name": "Look 2",
+          "images": []
+        },
+        {
+          "name": "Look 3",
+          "images": []
+        },
+        {
+          "name": "Look 4",
+          "images": []
+        }
+      ]
     },
     {
       "title": "陈迹·新渊",

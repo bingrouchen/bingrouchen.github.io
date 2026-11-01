@@ -77,7 +77,27 @@ content:
       type: image
       options:
         path: images/projects
-      description: 首页轮播的第一张，也是作品页的缩略图。建议竖版 2:3 / First image in the home carousel and the thumbnail on the Works page. Portrait 2:3 recommended.
+      description: 首页轮播第一张、作品页缩略图，也是项目页顶部会上下慢慢滑动的大图 / First image in the home carousel, the Works thumbnail, and the slowly panning image at the top of the project page.
+    - name: looks
+      label: Looks 造型
+      type: object
+      description: 每套造型一组图片，显示在项目介绍下面 / One set of photos per look, shown below the description.
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{name}'
+      fields:
+      - name: name
+        label: 名称 Name
+        type: string
+        description: 例如 Look 1 / e.g. Look 1
+      - name: images
+        label: 图片 Photos
+        type: image
+        list: true
+        options:
+          path: images/projects
+        description: 建议竖版 3:4；点开网站上的图片可以看完整大图 / Portrait 3:4 recommended; visitors can click to see the full image.
     - name: images
       label: 更多图片 More images
       type: image

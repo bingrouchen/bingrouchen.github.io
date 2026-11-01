@@ -48,6 +48,7 @@
     material:   { zh: "材料探索", en: "Material Exploration" },
     others:     { zh: "其他", en: "Others" },
     soon:       { zh: "内容即将更新。", en: "Coming soon." },
+    close:      { zh: "关闭", en: "Close" },
     research:   { zh: "研究", en: "Research" },
     about:      { zh: "关于", en: "About" },
     all:        { zh: "全部", en: "All" },
@@ -178,7 +179,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.6</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.7</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -190,6 +191,45 @@
   }
   function sortedProjects() {
     return S.projects.slice().sort(function (a, b) { return b.year - a.year; });
+  }
+
+  /* 每套 Look 一行展示窗口；没有图片时先显示占位框
+     One row of image windows per look; placeholders until photos are added */
+  function looks(p) {
+    var L = (p.looks || []).filter(function (l) { return l && (l.name || (l.images || []).length); });
+    if (!L.length) return "";
+    return '<section class="looks">' + L.map(function (l) {
+      var pics = (l.images || []).filter(Boolean);
+      var cells = pics.length ? pics.map(function (src) { return img(src, t(p.title) + " " + (l.name || ""), "zoomable"); }).join("")
+                              : '<div class="ph missing"></div><div class="ph missing"></div><div class="ph missing"></div>';
+      return '<div class="look"><h2 class="look-name">' + esc(l.name || "") + '</h2><div class="look-grid">' + cells + "</div></div>";
+    }).join("") + "</section>";
+  }
+
+  /* 点击图片看完整大图 / click an image to see it whole */
+  function wireLightbox() {
+    var imgs = [].slice.call(document.querySelectorAll("#app .zoomable img"));
+    imgs.forEach(function (im, i) {
+      im.parentNode.onclick = function () { openBox(imgs.map(function (x) { return x.src; }), i); };
+    });
+  }
+  function openBox(list, i) {
+    var box = document.createElement("div");
+    box.className = "lightbox";
+    box.innerHTML = '<img alt=""><button class="lb-close" aria-label="' + t(UI.close) + '">×</button>' +
+      (list.length > 1 ? '<button class="lb-prev" aria-label="' + t(UI.prev) + '"></button><button class="lb-next" aria-label="' + t(UI.nextSlide) + '"></button>' : "");
+    var pic = box.querySelector("img");
+    function show(k) { i = (k + list.length) % list.length; pic.src = list[i]; }
+    function close() { box.remove(); document.removeEventListener("keydown", key); document.body.classList.remove("no-scroll"); }
+    function key(e) { if (e.key === "Escape") close(); if (e.key === "ArrowRight") show(i + 1); if (e.key === "ArrowLeft") show(i - 1); }
+    box.onclick = function (e) {
+      if (e.target.classList.contains("lb-next")) show(i + 1);
+      else if (e.target.classList.contains("lb-prev")) show(i - 1);
+      else if (e.target !== pic) close();
+    };
+    document.addEventListener("keydown", key);
+    document.body.appendChild(box); document.body.classList.add("no-scroll");
+    show(i);
   }
 
   /* ---------- 各页面 / Pages ---------- */
@@ -248,14 +288,15 @@
         '<article class="project"><header class="project-head"><h1>' + esc(t(p.title)) + "</h1>" +
         (lang === "zh" && p.title.en !== p.title.zh ? '<p class="alt-title">' + esc(p.title.en) + "</p>" : "") +
         (lang === "en" && p.title.en !== p.title.zh ? '<p class="alt-title">' + esc(p.title.zh) + "</p>" : "") + "</header>" +
-        img(p.cover, t(p.title), "ratio-wide") +
+        img(p.cover, t(p.title), "ratio-wide pan zoomable") +
         '<div class="project-body"><dl class="facts"><div><dt>' + t(UI.year) + "</dt><dd>" + esc(p.year) + "</dd></div>" +
         "<div><dt>" + t(UI.category) + "</dt><dd>" + esc(t(p.category)) + "</dd></div>" +
         (p.materials ? "<div><dt>" + t(UI.materials) + "</dt><dd>" + esc(t(p.materials)) + "</dd></div>" : "") +
         (tags ? '<div class="tags">' + tags + "</div>" : "") + "</dl>" +
         '<div class="prose">' + paras(t(p.description)) + "</div></div>" +
+        looks(p) +
         videoEmbed(p.video) +
-        '<div class="gallery">' + (p.images || []).map(function (s) { return img(s, t(p.title), ""); }).join("") + "</div>" +
+        ((p.images || []).length ? '<div class="gallery">' + p.images.map(function (s) { return img(s, t(p.title), "zoomable"); }).join("") + "</div>" : "") +
         "</article>" +
         (next && next.id !== p.id ? '<a class="next" href="' + projectUrl(next.id) + '"><span>' + t(UI.next) + "</span><strong>" + esc(t(next.title)) + " →</strong></a>" : "");
     },
@@ -395,7 +436,7 @@
   }
 
   var _render = render;
-  render = function () { _render(); wireSlider(); fitStitches(); };
+  render = function () { _render(); wireSlider(); wireLightbox(); fitStitches(); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStitches);
   Promise.all(["site", "projects", "materials", "about"].map(load)).then(function (d) {
     S = build(d[0], d[1], d[2], d[3]);
