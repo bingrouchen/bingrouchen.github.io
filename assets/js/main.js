@@ -179,7 +179,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.8</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.9</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 

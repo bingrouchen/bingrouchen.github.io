@@ -338,3 +338,18 @@ body.no-scroll { overflow: hidden; }
 }
 .project-body .prose p { margin: 0; padding-top: 12px; }
 .project-body .prose p + p { margin-top: .9em; }
+
+/* ---------- 项目页统一网格：介绍区和下面的图片窗口用同一套三列和间距
+   One shared grid on project pages: the description and the image windows below
+   use the same three columns and gap, so their edges line up ---------- */
+.project { --col-gap: clamp(12px, 1.6vw, 20px); }
+.project .look-grid, .project .gallery { gap: var(--col-gap); }
+.project-body { grid-template-columns: repeat(3, 1fr); column-gap: var(--col-gap); row-gap: 24px; }
+.project-body .facts { grid-column: 1; }
+.project-body .prose { grid-column: 2 / span 2; border-top: 1px solid var(--line); }
+.project-body .prose p:last-child { padding-bottom: 12px; }
+@media (max-width: 720px) {
+  .project-body { grid-template-columns: 1fr; }
+  .project-body .facts, .project-body .prose { grid-column: 1; }
+}
+.project-body .prose p:first-child { padding-top: 10px; }   /* 第一行与左边“2019”同一基线 / first line on the same baseline as “2019” */
