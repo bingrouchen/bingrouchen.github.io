@@ -98,7 +98,11 @@
       _cv.font = cs.fontWeight + " 100px " + cs.fontFamily;
       var m = _cv.measureText(tx.textContent);
       var top = m.actualBoundingBoxAscent || 72, bottom = m.actualBoundingBoxDescent || 0;
-      svg.setAttribute("viewBox", "0 " + (-top) + " " + w + " " + (top + bottom));
+      var hh = top + bottom;
+      svg.setAttribute("viewBox", "0 " + (-top) + " " + w + " " + hh);
+      svg.setAttribute("preserveAspectRatio", "xMinYMin meet");
+      /* 直接写明宽度，Safari 不会自动按比例算 / set the width explicitly; Safari won't derive it */
+      svg.style.width = "calc(var(--h) * " + (w / hh).toFixed(4) + ")";
     });
   }
 

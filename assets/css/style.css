@@ -44,7 +44,7 @@ h1, h2, h3 { font-weight: 400; line-height: 1.15; letter-spacing: -0.01em; }
   padding: clamp(56px, 8vw, 108px) var(--inset) clamp(36px, 4.5vw, 56px);
 }
 /* 虚线字：改 --stitch 颜色、--dash 虚线长短 / dashed letters: colour and dash length */
-.stitch { display: block; overflow: visible; height: var(--h); width: auto; }
+.stitch { display: block; overflow: visible; height: var(--h); width: auto; flex-shrink: 0; }
 .stitch text {
   font-family: var(--font); font-size: 100px; font-weight: 600; letter-spacing: 0;
   /* 先画虚线、再用背景色填充字的内部，盖住字形内部多余的线
@@ -52,7 +52,7 @@ h1, h2, h3 { font-weight: 400; line-height: 1.15; letter-spacing: -0.01em; }
   fill: var(--bg); stroke: var(--stitch); stroke-width: 4.8; paint-order: stroke fill;
   stroke-dasharray: var(--dash, 9 5); stroke-linejoin: round; transition: stroke .2s;
 }
-.brand { display: block; --h: var(--name-h); }
+.brand { display: block; flex-shrink: 0; --h: var(--name-h); }
 .nav { display: flex; gap: clamp(8px, 1vw, 12px); --h: calc(var(--name-h) - var(--nav-gap) - var(--bar)); }
 .nav a { display: flex; flex-direction: column; gap: var(--nav-gap); }
 .bar { display: block; height: var(--bar); background: var(--ink); opacity: .35; transition: opacity .2s; }
