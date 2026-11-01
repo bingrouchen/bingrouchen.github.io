@@ -15,7 +15,6 @@ content:
   - name: works
     label: 作品列表 Works
     type: object
-    description: 点“Add”新建作品；拖动可以调整顺序 / Click “Add” to add a project; drag to reorder.
     list:
       collapsible:
         collapsed: true
