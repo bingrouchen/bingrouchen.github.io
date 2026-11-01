@@ -33,5 +33,15 @@
     "blur": 10,
     "sewDelay": 1,
     "seconds": 4.7
+  },
+  "sections": {
+    "fashion": {
+      "zh": "服装系列",
+      "en": "Fashion Collection"
+    },
+    "process": {
+      "zh": "制作过程 / 花絮",
+      "en": "Making Of"
+    }
   }
 }

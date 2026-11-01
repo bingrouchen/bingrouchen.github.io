@@ -29,6 +29,17 @@ content:
       type: string
       required: true
       description: 网页地址会根据英文名称自动生成 / The page address is created automatically from the English title.
+    - name: section
+      label: 放在哪个分区 Section
+      type: select
+      required: true
+      description: 决定它出现在 WORKS 菜单的哪一栏 / Decides which part of the WORKS menu it appears under.
+      options:
+        values:
+        - name: fashion
+          label: 服装系列 Fashion Collection
+        - name: process
+          label: 制作过程 / 花絮 Making Of
     - name: year
       label: 年份 Year
       type: number
@@ -331,6 +342,30 @@ content:
     type: string
     list: true
     description: 按顺序填作品的英文名称；留空则按年份从新到旧 / English project titles in order; leave empty to sort newest first.
+  - name: sections
+    label: WORKS 菜单分区名称 WORKS menu names
+    type: object
+    fields:
+    - name: fashion
+      label: 服装系列 Fashion Collection
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+    - name: process
+      label: 制作过程 / 花絮 Making Of
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
   - name: research
     label: 研究页 Research page
     type: object

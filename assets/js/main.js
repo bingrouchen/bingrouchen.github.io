@@ -24,12 +24,23 @@
       }).filter(Boolean);
     });
     s.featured = (s.featured || []).map(function (f) { return slug(f); });
+    /* 作品分区：服装系列 / 制作过程（名称可在 Pages CMS 的网站设置里改）
+       Works sections: Fashion Collection / Making Of (names editable in Site settings) */
+    s.sections = s.sections || {};
+    ["fashion", "process"].forEach(function (k) {
+      var v = s.sections[k] || {};
+      s.sections[k] = { zh: v.zh || UI[k].zh, en: v.en || UI[k].en };
+    });
+    s.projects.forEach(function (p) { p.section = p.section === "process" ? "process" : "fashion"; });
     return s;
   }
 
   /* ---------- 界面文字 / Interface text ---------- */
   var UI = {
     works:      { zh: "作品", en: "Works" },
+    fashion:    { zh: "服装系列", en: "Fashion Collection" },
+    process:    { zh: "制作过程 / 花絮", en: "Making Of" },
+    soon:       { zh: "内容即将更新。", en: "Coming soon." },
     research:   { zh: "研究", en: "Research" },
     about:      { zh: "关于", en: "About" },
     all:        { zh: "全部", en: "All" },
@@ -138,15 +149,28 @@
       '<div class="header-inner"><a class="brand" href="index.html">' + stitch(S.name.en) + "</a>" +
       '<nav class="nav">' + links.map(function (l) {
         var on = page === l[0] || (page === "project" && l[0] === "works");
-        return '<a href="' + l[1] + '"' + (on ? ' class="active" aria-current="page"' : "") + ">" + stitch(t(UI[l[0]])) + '<i class="bar"></i></a>';
+        var a = '<a href="' + l[1] + '"' + (on ? ' class="active" aria-current="page"' : "") + ">" + stitch(t(UI[l[0]])) + '<i class="bar"></i></a>';
+        return l[0] === "works" ? '<div class="nav-item has-menu">' + a + worksMenu() + "</div>" : a;
       }).join("") + "</nav></div>";
+  }
+  /* 鼠标移到 WORKS 时出现的下拉菜单 / dropdown shown when hovering WORKS */
+  function worksMenu() {
+    function group(k) {
+      var items = sortedProjects().filter(function (p) { return p.section === k; });
+      return '<li><a class="menu-head" href="works.html?section=' + k + '">' + esc(t(S.sections[k])) + "</a>" +
+        (items.length ? '<ul class="menu-sub">' + items.map(function (p) {
+          return '<li><a href="' + projectUrl(p.id) + '">' + esc(t(p.title)) + "</a></li>";
+        }).join("") + "</ul>" : "") + "</li>";
+    }
+    return '<div class="menu"><ul><li><a class="menu-head" href="works.html">' + t(UI.all) + "</a></li>" +
+      group("fashion") + group("process") + "</ul></div>";
   }
   function footer() {
     var c = S.contact, items = [];
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.2</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.3</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -166,7 +190,7 @@
       var all = sortedProjects();
       var feat = (S.featured && S.featured.length) ? S.featured.map(function (id) {
         return all.filter(function (p) { return p.id === id; })[0];
-      }).filter(Boolean) : all;
+      }).filter(Boolean) : all.filter(function (p) { return p.section === "fashion"; });
       /* 每个项目一组可左右翻的图片，下面是项目名称链接
          One swipeable row of images per project, with the project title link below */
       return feat.map(function (p) {
@@ -184,16 +208,22 @@
     },
 
     works: function () {
-      var active = new URLSearchParams(location.search).get("tag") || "all";
-      var used = {};
-      S.projects.forEach(function (p) { (p.tags || []).forEach(function (k) { used[k] = 1; }); });
-      var filters = '<div class="filters"><button data-tag="all"' + (active === "all" ? ' class="on"' : "") + ">" + t(UI.all) + "</button>" +
-        Object.keys(S.tags).filter(function (k) { return used[k]; }).map(function (k) {
-          return '<button data-tag="' + k + '"' + (active === k ? ' class="on"' : "") + ">" + esc(t(S.tags[k])) + "</button>";
-        }).join("") + "</div>";
-      var list = sortedProjects().filter(function (p) { return active === "all" || (p.tags || []).indexOf(active) > -1; });
+      var q = new URLSearchParams(location.search);
+      var sec = q.get("section"), tag = q.get("tag");
+      if (sec !== "fashion" && sec !== "process") sec = "all";
+      function f(k, href, label) {
+        return '<a href="' + href + '"' + (!tag && sec === k ? ' class="on"' : "") + ">" + esc(label) + "</a>";
+      }
+      var filters = '<div class="filters">' + f("all", "works.html", t(UI.all)) +
+        f("fashion", "works.html?section=fashion", t(S.sections.fashion)) +
+        f("process", "works.html?section=process", t(S.sections.process)) +
+        (tag && S.tags[tag] ? '<a class="on" href="works.html?tag=' + tag + '">#' + esc(t(S.tags[tag])) + "</a>" : "") + "</div>";
+      var list = sortedProjects().filter(function (p) {
+        if (tag) return (p.tags || []).indexOf(tag) > -1;
+        return sec === "all" || p.section === sec;
+      });
       return '<section class="page-head"><h1>' + t(UI.works) + "</h1>" + filters + "</section>" +
-        '<div class="grid">' + list.map(card).join("") + "</div>";
+        (list.length ? '<div class="grid">' + list.map(card).join("") + "</div>" : '<p class="empty">' + t(UI.soon) + "</p>");
     },
 
     project: function () {
@@ -269,13 +299,6 @@
 
     document.querySelectorAll("[data-lang]").forEach(function (b) {
       b.onclick = function () { setLang(b.getAttribute("data-lang")); };
-    });
-    document.querySelectorAll("[data-tag]").forEach(function (b) {
-      b.onclick = function () {
-        var k = b.getAttribute("data-tag");
-        history.replaceState(null, "", k === "all" ? "works.html" : "works.html?tag=" + k);
-        render();
-      };
     });
   }
   /* 轮播箭头 / Slider arrows */

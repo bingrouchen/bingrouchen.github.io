@@ -197,9 +197,9 @@ body.no-scroll { overflow: hidden; }
 .page-head h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 300; letter-spacing: -0.02em; }
 .page-head .lead { margin-top: 16px; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; font-size: 14px; }
-.filters button { color: var(--ink); opacity: .55; padding: 2px 0; border-bottom: 1px solid transparent; }
-.filters button:hover { color: var(--text); }
-.filters button.on { opacity: 1; color: var(--text); border-bottom-color: var(--text); }
+.filters a, .filters button { color: var(--ink); opacity: .55; padding: 2px 0; border-bottom: 1px solid transparent; }
+.filters a:hover, .filters button:hover { color: var(--text); }
+.filters a.on, .filters button.on { opacity: 1; color: var(--text); border-bottom-color: var(--text); }
 .count { margin-top: 20px; font-size: 13px; color: var(--muted); }
 
 /* ---------- 项目详情 / Project ---------- */
@@ -277,3 +277,21 @@ body.no-scroll { overflow: hidden; }
 }
 
 .ver { font-style: normal; opacity: .4; margin-left: 8px; }  /* 版本号 / version number */
+
+/* ---------- WORKS 下拉菜单 / WORKS dropdown ---------- */
+#site-header { z-index: 30; }
+.nav-item { position: relative; display: flex; }
+.menu {
+  position: absolute; top: 100%; left: 0; z-index: 40; padding-top: 14px; min-width: 100%; width: max-content; max-width: 320px;
+  opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .25s ease, transform .25s ease, visibility .25s;
+}
+.has-menu:hover .menu, .has-menu:focus-within .menu { opacity: 1; visibility: visible; transform: none; }
+.menu > ul { list-style: none; background: var(--bg); border: 1px solid var(--line); padding: 14px 22px 16px; }
+.menu li { list-style: none; }
+.menu-head { display: block; padding: 7px 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); opacity: .6; transition: opacity .2s; }
+.menu-head:hover { opacity: 1; }
+/* 系列列表左侧是一条虚线，呼应缝线 / a dashed line beside the series, echoing the stitching */
+.menu-sub { margin: 2px 0 8px 2px; padding-left: 14px; border-left: 1px dashed var(--ink); }
+.menu-sub a { display: block; padding: 4px 0; font-size: 14px; color: var(--ink); opacity: .75; transition: opacity .2s; }
+.menu-sub a:hover { opacity: 1; }
+@media (max-width: 720px) { .menu { display: none; } }
