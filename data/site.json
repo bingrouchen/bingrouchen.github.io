@@ -1,0 +1,37 @@
+{
+  "name": {
+    "zh": "陈冰柔",
+    "en": "Bingrou Chen"
+  },
+  "intro": {
+    "zh": "设计师、博士研究生，探索时装与纺织品的更多可能。",
+    "en": "Designer and PhD student exploring new possibilities in fashion and textiles."
+  },
+  "contact": {
+    "email": "",
+    "instagram": "",
+    "linkedin": ""
+  },
+  "featured": [],
+  "research": {
+    "title": {
+      "zh": "材料库",
+      "en": "Material Library"
+    },
+    "intro": {
+      "zh": "这里记录我在博士研究中收集的材料。每种材料都有一份“材料档案”，参考欧盟数字产品护照的框架，记录它的来源、成分、特性与循环信息。",
+      "en": "A record of the materials collected during my PhD research. Each material has its own record, informed by the EU Digital Product Passport framework, documenting its origin, composition, properties and circularity."
+    }
+  },
+  "splash": {
+    "enabled": true,
+    "image": "/images/splash.jpg",
+    "video": "",
+    "dimDelay": 0,
+    "dimTime": 1.6,
+    "dim": 0.62,
+    "blur": 10,
+    "sewDelay": 1,
+    "seconds": 4.7
+  }
+}

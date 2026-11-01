@@ -1,0 +1,44 @@
+[
+  {
+    "id": "M-001",
+    "sample": true,
+    "name": {
+      "zh": "示例材料",
+      "en": "Sample Material"
+    },
+    "category": {
+      "zh": "回收纤维",
+      "en": "Recycled fibre"
+    },
+    "image": "/images/materials/M-001.jpg",
+    "collected": "2026-03",
+    "location": {
+      "zh": "新西兰 奥克兰",
+      "en": "Auckland, New Zealand"
+    },
+    "source": {
+      "zh": "来源 / 供应方",
+      "en": "Source / supplier"
+    },
+    "composition": {
+      "zh": "成分，例如 80% 羊毛、20% 聚酯",
+      "en": "Composition, e.g. 80% wool, 20% polyester"
+    },
+    "properties": {
+      "zh": "特性：手感、强度、颜色等",
+      "en": "Properties: hand feel, strength, colour, etc."
+    },
+    "processing": {
+      "zh": "加工方式",
+      "en": "Processing"
+    },
+    "endOfLife": {
+      "zh": "可回收 / 可降解 / 可再利用",
+      "en": "Recyclable / biodegradable / reusable"
+    },
+    "notes": {
+      "zh": "备注",
+      "en": "Notes"
+    }
+  }
+]

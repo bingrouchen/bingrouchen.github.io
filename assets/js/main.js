@@ -1,6 +1,28 @@
 /* 网站功能 / Site behaviour — 一般不需要改 / normally no need to edit */
 (function () {
-  var S = window.SITE;
+  /* 内容来自 data 文件夹里的 JSON 文件（可以用 Pages CMS 编辑）
+     Content comes from the JSON files in the data folder (editable with Pages CMS) */
+  var S;
+  /* 每分钟换一个参数，避免浏览器和 GitHub 用旧内容 / a per-minute token so browsers and GitHub don't serve stale content */
+  function load(name) {
+    return fetch("data/" + name + ".json?t=" + Math.floor(Date.now() / 60000), { cache: "no-cache" })
+      .then(function (r) { if (!r.ok) throw new Error(name); return r.json(); });
+  }
+  function slug(x) { return String(x || "").toLowerCase().trim().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, ""); }
+  function build(site, projects, materials, about) {
+    var s = site; s.projects = projects || []; s.materials = materials || []; s.about = about || {};
+    s.contact = s.contact || {}; s.research = s.research || {};
+    /* 标签直接写在每个项目里，这里汇总成筛选按钮 / tags live on each project; collect them for the filters */
+    s.tags = {};
+    s.projects.forEach(function (p, i) {
+      p.id = p.id || slug(p.title && p.title.en) || "project-" + (i + 1);
+      p.images = (p.images || []).filter(Boolean);
+      p.tags = (p.tags || []).map(function (tg) {
+        var k = slug(tg.en || tg.zh); if (k) s.tags[k] = s.tags[k] || tg; return k;
+      }).filter(Boolean);
+    });
+    return s;
+  }
 
   /* ---------- 界面文字 / Interface text ---------- */
   var UI = {
@@ -121,7 +143,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.0</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.1</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -341,6 +363,13 @@
   var _render = render;
   render = function () { _render(); wireSlider(); fitStitches(); };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStitches);
-  render();
-  splash();
+  Promise.all(["site", "projects", "materials", "about"].map(load)).then(function (d) {
+    S = build(d[0], d[1], d[2], d[3]);
+    render();
+    splash();
+  }).catch(function () {
+    document.getElementById("app").innerHTML = '<p class="empty">' +
+      "内容没有加载出来。如果你是直接双击打开的本地文件，请在线上网站查看。<br>" +
+      "Content couldn't load. If you opened this file directly from your computer, please view it on the live site.</p>";
+  });
 })();
