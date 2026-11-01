@@ -4,6 +4,7 @@
       "title": "NO ANGLE",
       "title_en": "NO ANGLE",
       "section": "craft",
+      "draft": false,
       "year": 2019,
       "category": {
         "zh": "服装系列",
@@ -23,9 +24,7 @@
           "en": "Knitting"
         }
       ],
-      "cover": "",
-      "images": [],
-      "video": "",
+      "cover": "/images/projects/未标题-2.jpg",
       "summary": {
         "zh": "用橡皮圈、金属环和透明亚克力球编织成的可穿戴雕塑。",
         "en": "Wearable sculpture knitted from rubber bands, metal rings and clear acrylic spheres."
@@ -37,13 +36,13 @@
       "materials": {
         "zh": "橡皮圈、金属环、透明亚克力球",
         "en": "Rubber bands, metal rings, clear acrylic spheres"
-      },
-      "draft": false
+      }
     },
     {
       "title": "陈迹·新渊",
       "title_en": "The Shape of Old Memory",
       "section": "material",
+      "draft": false,
       "year": 2022,
       "category": {
         "zh": "服装系列",
@@ -63,9 +62,6 @@
           "en": "Traditional Craft"
         }
       ],
-      "cover": "",
-      "images": [],
-      "video": "",
       "summary": {
         "zh": "以金属珠链与环氧树脂“打捞”潮绣图案的毕业系列。",
         "en": "A graduation collection that “salvages” Chaozhou embroidery through metal bead chains and epoxy resin."
@@ -77,8 +73,7 @@
       "materials": {
         "zh": "金属珠链、环氧树脂滴胶",
         "en": "Metal bead chains, epoxy resin"
-      },
-      "draft": false
+      }
     },
     {
       "title": "COCLE",
@@ -89,22 +84,6 @@
       "category": {
         "zh": "服装系列",
         "en": "Fashion Collection"
-      },
-      "tags": [],
-      "cover": "",
-      "images": [],
-      "video": "",
-      "summary": {
-        "zh": "",
-        "en": ""
-      },
-      "description": {
-        "zh": "",
-        "en": ""
-      },
-      "materials": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -116,22 +95,6 @@
       "category": {
         "zh": "服装系列",
         "en": "Fashion Collection"
-      },
-      "tags": [],
-      "cover": "",
-      "images": [],
-      "video": "",
-      "summary": {
-        "zh": "",
-        "en": ""
-      },
-      "description": {
-        "zh": "",
-        "en": ""
-      },
-      "materials": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -143,22 +106,6 @@
       "category": {
         "zh": "服装系列",
         "en": "Fashion Collection"
-      },
-      "tags": [],
-      "cover": "",
-      "images": [],
-      "video": "",
-      "summary": {
-        "zh": "",
-        "en": ""
-      },
-      "description": {
-        "zh": "",
-        "en": ""
-      },
-      "materials": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -170,22 +117,6 @@
       "category": {
         "zh": "服装系列",
         "en": "Fashion Collection"
-      },
-      "tags": [],
-      "cover": "",
-      "images": [],
-      "video": "",
-      "summary": {
-        "zh": "",
-        "en": ""
-      },
-      "description": {
-        "zh": "",
-        "en": ""
-      },
-      "materials": {
-        "zh": "",
-        "en": ""
       }
     }
   ]
