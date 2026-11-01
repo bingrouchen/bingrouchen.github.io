@@ -328,3 +328,13 @@ body.no-scroll { overflow: hidden; }
 .lb-prev::before { transform: translateX(5px) rotate(-135deg); } .lb-next::before { transform: translateX(-5px) rotate(45deg); }
 @keyframes lbIn { from { opacity: 0; } }
 @media (max-width: 720px) { .look-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- 项目介绍：两端对齐，字体字号与左边信息栏一致
+   Project description: justified, same font and size as the facts column ---------- */
+.project-body .prose {
+  font-size: 14px; line-height: 1.85; max-width: none;
+  text-align: justify; text-justify: inter-character;
+  hyphens: auto; -webkit-hyphens: auto;   /* 英文自动断词，避免词间空隙过大 / hyphenate English to avoid wide gaps */
+}
+.project-body .prose p { margin: 0; padding-top: 12px; }
+.project-body .prose p + p { margin-top: .9em; }
