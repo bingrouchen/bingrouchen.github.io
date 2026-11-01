@@ -65,9 +65,6 @@ h1, h2, h3 { font-weight: 400; line-height: 1.15; letter-spacing: -0.01em; }
 .lang button { color: var(--ink); font-size: 12px; opacity: .45; }
 .lang button.on { opacity: 1; }
 .lang button.on { color: var(--text); }
-.splash-name { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
-.splash .brand-main { font-size: clamp(22px, 4vw, 40px); font-weight: 400; letter-spacing: .32em; text-transform: uppercase; margin-right: -.32em; }
-.splash .brand-sub { letter-spacing: .5em; margin-right: -.5em; }
 
 main.wrap { min-height: 70vh; padding: 0 calc(var(--gutter) + var(--inset)) clamp(72px, 10vw, 140px); }
 
@@ -120,21 +117,58 @@ main.wrap { min-height: 70vh; padding: 0 calc(var(--gutter) + var(--inset)) clam
 .feature-meta { margin-top: 8px; font-size: 13px; color: var(--muted); }
 .prose.center { margin: 20px auto 0; font-size: 16px; color: var(--text); }
 
-/* ---------- 开屏 / Intro screen ---------- */
+/* ---------- 开屏动画 / Animated intro ----------
+   --sew-time：缝出名字用的时间 / how long the name takes to be sewn */
 .splash {
-  position: fixed; inset: 0; z-index: 100; background: #0d0d0d; color: #fff;
+  --sew-time: 1.8s;
+  --sew-delay: 0s; --dim-delay: 0s; --dim-time: 1.5s; --dim: .6; --blur: 10px;   /* 有视频时由 data.js 的 sewDelay 设置 / set from sewDelay in data.js when there's a video */
+  position: fixed; inset: 0; z-index: 100; background: var(--bg);
   display: flex; align-items: center; justify-content: center; cursor: pointer;
-  transition: opacity .9s ease, visibility .9s;
+  transition: opacity 1s ease, visibility 1s;
 }
-.splash img, .splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .85; }
-.splash-name { position: relative; animation: rise 1.4s ease both; }
-.splash .brand-main { font-size: clamp(22px, 4vw, 40px); }
-.splash .brand-sub { color: rgba(255,255,255,.75); font-size: clamp(12px, 1.4vw, 15px); margin-top: 10px; }
-.splash-skip { position: absolute; bottom: 28px; left: 0; right: 0; margin: auto; width: max-content; color: rgba(255,255,255,.7); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+.splash img, .splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.splash.has-media { background: #000; --bg: #000; --stitch: #fff; }
+/* 照片：先清晰，再慢慢模糊；黑色叠层同时慢慢加深
+   Photo: starts sharp, then slowly blurs while a black layer slowly deepens */
+.splash.has-media img, .splash.has-media video { transform: scale(1.02); }
+.splash.play.has-media img, .splash.play.has-media video { animation: soften var(--dim-time) ease-out var(--dim-delay) forwards; }
+.splash.has-media::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0,0,0,calc(var(--dim) + .1)) 0%, rgba(0,0,0,var(--dim)) 100%);
+}
+.splash.play.has-media::after { animation: dim var(--dim-time) ease-out var(--dim-delay) forwards; }
+@keyframes soften { to { filter: blur(var(--blur)); transform: scale(1.08); } }
+@keyframes dim { to { opacity: 1; } }
+.splash-name, .splash-skip { z-index: 1; }
+.splash-name { position: relative; display: flex; flex-direction: column; align-items: center; gap: clamp(14px, 2vw, 22px); }
+.sew { position: relative; --h: clamp(30px, 6vw, 84px); }
+.splash .stitch text { fill: none; stroke-width: 4.8; }
+.splash .stitch text.cut { fill: #000; stroke: none; animation: none !important; }
+
+/* 遮罩从左往右展开 / the reveal grows from left to right */
+.sew-reveal { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+.splash.play .sew-reveal { animation: sew var(--sew-time) cubic-bezier(.55,.1,.35,1) var(--sew-delay) forwards; }
+/* 针：跟着缝线走的一条细线 / needle: a thin line that travels with the stitching */
+.needle { position: absolute; top: -18%; bottom: -18%; left: 0; width: 1px; background: var(--stitch); opacity: 0; }
+.splash.play .needle { animation: needle var(--sew-time) cubic-bezier(.55,.1,.35,1) var(--sew-delay) forwards; }
+/* 虚线轻轻流动，像线在走 / the dashes drift gently, like thread running */
+.splash.play .stitch text { animation: run 1.2s linear infinite; }
+.splash-sub { color: var(--stitch); font-size: clamp(13px, 1.5vw, 17px); letter-spacing: .6em; margin-right: -.6em; opacity: 0; }
+.splash.play .splash-sub { animation: fadeUp .9s ease calc(var(--sew-delay) + var(--sew-time) - .2s) forwards; }
+.splash-skip { position: absolute; bottom: 28px; left: 0; right: 0; margin: auto; width: max-content; color: var(--stitch); opacity: .55; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+.splash.has-media .splash-sub, .splash.has-media .splash-skip { color: #fff; }
 .splash.out { opacity: 0; visibility: hidden; }
 body.no-scroll { overflow: hidden; }
-@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .splash-name { animation: none; } }
+@keyframes sew { to { transform: scaleX(1); } }
+@keyframes needle { 0% { left: 0; opacity: 0; } 8% { opacity: .8; } 85% { opacity: .8; } 100% { left: 100%; opacity: 0; } }
+@keyframes run { to { stroke-dashoffset: -14; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: .85; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .splash.play .sew-reveal, .splash.play .needle, .splash.play .stitch text, .splash.play .splash-sub { animation: none; }
+  .splash.play.has-media img, .splash.play.has-media video { animation: none; filter: blur(var(--blur)); }
+  .splash.play.has-media::after { animation: none; opacity: 1; }
+  .sew-reveal { transform: none; } .splash-sub { opacity: .85; }
+}
 
 /* ---------- 网格与卡片 / Grid & cards ---------- */
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(32px, 4vw, 56px) clamp(20px, 3vw, 40px); }
@@ -241,3 +275,5 @@ body.no-scroll { overflow: hidden; }
   .material { grid-template-columns: 1fr; }
   .mfields { grid-template-columns: 1fr; }
 }
+
+.ver { font-style: normal; opacity: .4; margin-left: 8px; }  /* 版本号 / version number */

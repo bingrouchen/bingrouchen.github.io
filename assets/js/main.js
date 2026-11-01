@@ -91,7 +91,7 @@
   function fitStitches() {
     _cv = _cv || document.createElement("canvas").getContext("2d");
     document.querySelectorAll("svg.stitch").forEach(function (svg) {
-      var tx = svg.querySelector("text"), w;
+      var tx = svg.querySelector("text:not(.cut)"), w;
       try { w = tx.getComputedTextLength(); } catch (e) { return; }
       /* 量出字形真实的上下边界，让对齐精确 / measure the real glyph edges for exact alignment */
       var cs = getComputedStyle(tx);
@@ -121,7 +121,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + "</span>" +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.0</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -273,29 +273,69 @@
     });
   }
 
-  /* 开屏 / Intro screen: 每次打开网站显示一次 / shown once per visit */
+  /* 开屏动画 / Animated intro screen
+     名字像被缝出来一样从左到右出现，然后中文名淡入，最后淡出进入首页
+     The name is "sewn" from left to right, the Chinese name fades in, then the screen fades away */
   function splash() {
     var cfg = S.splash || {};
     if (!cfg.enabled || document.body.getAttribute("data-page") !== "home") return;
     try { if (sessionStorage.getItem("introSeen")) return; sessionStorage.setItem("introSeen", "1"); } catch (e) {}
+    var media = cfg.video ? '<video src="' + esc(cfg.video) + '" autoplay muted playsinline preload="auto"' + (cfg.image ? ' poster="' + esc(cfg.image) + '"' : "") + "></video>" :
+      (cfg.image ? '<img src="' + esc(cfg.image) + '" alt="" onerror="this.parentNode.classList.remove(\'has-media\');this.remove()">' : "");
     var el = document.createElement("div");
-    el.className = "splash";
-    el.innerHTML = (cfg.video ? '<video src="' + esc(cfg.video) + '" autoplay muted loop playsinline' + (cfg.image ? ' poster="' + esc(cfg.image) + '"' : "") + "></video>" :
-      (cfg.image ? '<img src="' + esc(cfg.image) + '" alt="" onerror="this.remove()">' : "")) +
-      '<div class="splash-name"><span class="brand-main">' + esc(S.name.en) + '</span><span class="brand-sub">' + esc(S.name.zh) + "</span></div>" +
+    el.className = "splash" + (media ? " has-media" : "");
+    el.innerHTML = media +
+      '<div class="splash-name"><div class="sew">' +
+      '<svg class="stitch" aria-hidden="true" focusable="false"><defs><mask id="sewMask" maskUnits="userSpaceOnUse" x="-50" y="-300" width="5000" height="600">' +
+      '<rect class="sew-reveal" x="-50" y="-300" width="5000" height="600" fill="#fff"/>' +
+      /* 挖掉字的内部，只留外轮廓，背景是视频也很干净 / cut out the letter insides so only the outline shows, even over video */
+      '<text class="cut" x="0" y="0">' + esc(S.name.en.toUpperCase()) + "</text></mask></defs>" +
+      '<text x="0" y="0" mask="url(#sewMask)">' + esc(S.name.en.toUpperCase()) + "</text></svg>" +
+      '<span class="needle"></span></div>' +
+      '<span class="splash-sub">' + esc(S.name.zh) + "</span></div>" +
       '<button class="splash-skip">' + t(UI.skip) + " ↓</button>";
+    if (media) {
+      el.style.setProperty("--sew-delay", (cfg.sewDelay || 0) + "s");
+      el.style.setProperty("--dim-delay", (cfg.dimDelay || 0) + "s");
+      el.style.setProperty("--dim-time", (cfg.dimTime || 1.5) + "s");
+      el.style.setProperty("--dim", cfg.dim == null ? 0.6 : cfg.dim);
+      el.style.setProperty("--blur", (cfg.blur == null ? 10 : cfg.blur) + "px");
+    }
     document.body.appendChild(el);
     document.body.classList.add("no-scroll");
+    var vid = el.querySelector("video");
+    if (vid) {
+      vid.playbackRate = cfg.videoSpeed || 1;
+      vid.addEventListener("loadedmetadata", function () { vid.playbackRate = cfg.videoSpeed || 1; });
+      var p = vid.play(); if (p && p.catch) p.catch(function () {});
+    }
+    fitStitches();
+    /* 遮罩宽度按名字的实际长度设置 / size the reveal to the name's real width */
+    try {
+      var vb = el.querySelector("svg").viewBox.baseVal;
+      var r = el.querySelector(".sew-reveal");
+      r.setAttribute("x", vb.x - 10); r.setAttribute("width", vb.width + 20);
+    } catch (e) {}
+    /* 等照片加载好再开始动画，最多等 1.5 秒 / start once the photo has loaded, waiting at most 1.5s */
+    var started = false;
+    function start() {
+      if (started) return; started = true;
+      requestAnimationFrame(function () { el.classList.add("play"); });
+      setTimeout(close, (cfg.seconds || 3.8) * 1000);
+    }
+    var im = el.querySelector("img");
+    if (im && !im.complete) { im.addEventListener("load", start); im.addEventListener("error", start); setTimeout(start, 1500); }
+    else start();
     var done = false;
     function close() {
       if (done) return; done = true;
       el.classList.add("out"); document.body.classList.remove("no-scroll");
-      setTimeout(function () { el.remove(); }, 900);
+      setTimeout(function () { el.remove(); }, 1000);
     }
     el.onclick = close;
     window.addEventListener("wheel", close, { once: true, passive: true });
     window.addEventListener("touchmove", close, { once: true, passive: true });
-    setTimeout(close, (cfg.seconds || 3) * 1000);
+    el.querySelector(".splash-skip").onclick = close;
   }
 
   var _render = render;

@@ -23,9 +23,14 @@ window.SITE = {
      enabled：false 可以关掉开屏 / set to false to turn the intro off */
   splash: {
     enabled: true,
-    image: "images/splash.jpg",
-    video: "",
-    seconds: 3
+    image: "images/splash.jpg",   // 开屏照片 / intro photo
+    video: "",                    // 也可以换成视频，例如 "images/splash.mp4" / or a video
+    dimDelay: 0,                  // 照片清晰地停留几秒后开始变暗变模糊 / seconds the photo stays sharp
+    dimTime: 1.6,                 // 变暗变模糊用几秒 / seconds to darken and blur
+    dim: 0.62,                    // 最后叠加的黑色有多深，0–1 / how dark the black overlay gets, 0–1
+    blur: 10,                     // 最后模糊的程度（像素）/ how blurry it gets, in pixels
+    sewDelay: 1.0,                // 几秒后开始缝名字 / seconds before the name starts being sewn
+    seconds: 4.7                  // 开屏总共停留几秒 / total seconds before the intro fades out
   },
 
   /* 首页轮播：按顺序填项目 id，留空 [] 就显示全部
