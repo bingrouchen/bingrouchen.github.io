@@ -1,0 +1,302 @@
+/* 网站功能 / Site behaviour — 一般不需要改 / normally no need to edit */
+(function () {
+  var S = window.SITE;
+
+  /* ---------- 界面文字 / Interface text ---------- */
+  var UI = {
+    works:      { zh: "作品", en: "Works" },
+    research:   { zh: "研究", en: "Research" },
+    about:      { zh: "关于", en: "About" },
+    all:        { zh: "全部", en: "All" },
+    selected:   { zh: "精选作品", en: "Selected Works" },
+    viewAll:    { zh: "查看全部作品", en: "View all works" },
+    back:       { zh: "返回作品", en: "Back to works" },
+    year:       { zh: "年份", en: "Year" },
+    category:   { zh: "类别", en: "Category" },
+    materials:  { zh: "材料", en: "Materials" },
+    next:       { zh: "下一个项目", en: "Next project" },
+    notFound:   { zh: "没有找到这个项目。", en: "Project not found." },
+    contact:    { zh: "联系", en: "Contact" },
+    education:  { zh: "教育背景", en: "Education" },
+    exhibitions:{ zh: "展览与奖项", en: "Exhibitions & Awards" },
+    sample:     { zh: "示例", en: "Sample" },
+    collected:  { zh: "收集时间", en: "Collected" },
+    location:   { zh: "收集地点", en: "Location" },
+    source:     { zh: "来源", en: "Source" },
+    composition:{ zh: "成分", en: "Composition" },
+    properties: { zh: "特性", en: "Properties" },
+    processing: { zh: "加工方式", en: "Processing" },
+    endOfLife:  { zh: "循环 / 生命周期末端", en: "Circularity / end of life" },
+    notes:      { zh: "备注", en: "Notes" },
+    entries:    { zh: "条记录", en: "entries" },
+    image:      { zh: "图片", en: "Image" },
+    discover:   { zh: "了解这个项目", en: "Discover the project" },
+    moreWorks:  { zh: "更多作品", en: "More Works" },
+    prev:       { zh: "上一张", en: "Previous" },
+    nextSlide:  { zh: "下一张", en: "Next" },
+    skip:       { zh: "进入", en: "Enter" }
+  };
+
+  /* ---------- 语言 / Language ---------- */
+  function getLang() {
+    var p = new URLSearchParams(location.search).get("lang");
+    if (p === "zh" || p === "en") return p;
+    try { var s = localStorage.getItem("lang"); if (s) return s; } catch (e) {}
+    return "en";
+  }
+  var lang = getLang();
+  function setLang(l) {
+    try { localStorage.setItem("lang", l); } catch (e) {}
+    lang = l; render();
+  }
+  function t(obj) {
+    if (obj == null) return "";
+    if (typeof obj === "string" || typeof obj === "number") return String(obj);
+    return obj[lang] || obj.en || obj.zh || "";
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function paras(text) {
+    return esc(text).split(/\n\s*\n/).map(function (p) { return "<p>" + p + "</p>"; }).join("");
+  }
+
+  /* 图片：文件还没上传时显示灰色占位 / Grey placeholder until the image is uploaded */
+  function img(src, alt, cls) {
+    return '<div class="ph ' + (cls || "") + '"><img src="' + esc(src) + '" alt="' + esc(alt) +
+      '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()">' +
+      '<span class="ph-label">' + esc(src.split("/").slice(-2).join("/")) + "</span></div>";
+  }
+
+  function videoEmbed(url) {
+    if (!url) return "";
+    var m, src = "";
+    if ((m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/))) src = "https://www.youtube-nocookie.com/embed/" + m[1];
+    else if ((m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/))) src = "https://player.vimeo.com/video/" + m[1];
+    if (!src) return "";
+    return '<div class="video"><iframe src="' + src + '" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="video"></iframe></div>';
+  }
+
+  function projectUrl(id) { return "project.html?id=" + encodeURIComponent(id); }
+
+  /* ---------- 页头页脚 / Header & footer ---------- */
+  /* 虚线描边字（像缝纫线迹）/ Dashed outline lettering, like stitching */
+  function stitch(text) {
+    return '<svg class="stitch" aria-hidden="true" focusable="false"><text x="0" y="0">' + esc(String(text).toUpperCase()) + "</text></svg>" +
+      '<span class="sr">' + esc(text) + "</span>";
+  }
+  var _cv;
+  function fitStitches() {
+    _cv = _cv || document.createElement("canvas").getContext("2d");
+    document.querySelectorAll("svg.stitch").forEach(function (svg) {
+      var tx = svg.querySelector("text"), w;
+      try { w = tx.getComputedTextLength(); } catch (e) { return; }
+      /* 量出字形真实的上下边界，让对齐精确 / measure the real glyph edges for exact alignment */
+      var cs = getComputedStyle(tx);
+      _cv.font = cs.fontWeight + " 100px " + cs.fontFamily;
+      var m = _cv.measureText(tx.textContent);
+      var top = m.actualBoundingBoxAscent || 72, bottom = m.actualBoundingBoxDescent || 0;
+      svg.setAttribute("viewBox", "0 " + (-top) + " " + w + " " + (top + bottom));
+    });
+  }
+
+  function header(page) {
+    var links = [["works", "works.html"], ["research", "research.html"], ["about", "about.html"]];
+    return '<div class="lang"><button data-lang="en"' + (lang === "en" ? ' class="on"' : "") + '>EN</button>' +
+      '<span aria-hidden="true">/</span><button data-lang="zh"' + (lang === "zh" ? ' class="on"' : "") + ">中文</button></div>" +
+      '<div class="header-inner"><a class="brand" href="index.html">' + stitch(S.name.en) + "</a>" +
+      '<nav class="nav">' + links.map(function (l) {
+        var on = page === l[0] || (page === "project" && l[0] === "works");
+        return '<a href="' + l[1] + '"' + (on ? ' class="active" aria-current="page"' : "") + ">" + stitch(t(UI[l[0]])) + '<i class="bar"></i></a>';
+      }).join("") + "</nav></div>";
+  }
+  function footer() {
+    var c = S.contact, items = [];
+    if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
+    if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
+    if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + "</span>" +
+      (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
+  }
+
+  /* ---------- 作品卡片 / Project card ---------- */
+  function card(p) {
+    return '<a class="card" href="' + projectUrl(p.id) + '">' + img(p.cover, t(p.title), "ratio-45") +
+      '<div class="card-meta"><h3>' + esc(t(p.title)) + "</h3><span>" + esc(p.year) + "</span></div>" +
+      '<p class="card-sub">' + esc(t(p.category)) + "</p></a>";
+  }
+  function sortedProjects() {
+    return S.projects.slice().sort(function (a, b) { return b.year - a.year; });
+  }
+
+  /* ---------- 各页面 / Pages ---------- */
+  var pages = {
+    home: function () {
+      var all = sortedProjects();
+      var feat = (S.featured && S.featured.length) ? S.featured.map(function (id) {
+        return all.filter(function (p) { return p.id === id; })[0];
+      }).filter(Boolean) : all;
+      /* 每个项目一组可左右翻的图片，下面是项目名称链接
+         One swipeable row of images per project, with the project title link below */
+      return feat.map(function (p) {
+          var pics = [p.cover].concat(p.images || []);
+          return '<section class="showcase">' +
+            '<div class="slider"><div class="track">' + pics.map(function (src) {
+              return '<a class="slide" href="' + projectUrl(p.id) + '">' + img(src, t(p.title), "") + "</a>";
+            }).join("") + "</div>" +
+            '<button class="arrow prev" aria-label="' + t(UI.prev) + '"></button>' +
+            '<button class="arrow next-btn" aria-label="' + t(UI.nextSlide) + '"></button></div>' +
+            '<a class="btn showcase-link" href="' + projectUrl(p.id) + '">' + esc(t(p.title)) +
+            ' <span>' + esc(p.year) + "</span></a></section>";
+        }).join("") +
+        '<p class="all-link"><a href="works.html">' + t(UI.viewAll) + " →</a></p>";
+    },
+
+    works: function () {
+      var active = new URLSearchParams(location.search).get("tag") || "all";
+      var used = {};
+      S.projects.forEach(function (p) { (p.tags || []).forEach(function (k) { used[k] = 1; }); });
+      var filters = '<div class="filters"><button data-tag="all"' + (active === "all" ? ' class="on"' : "") + ">" + t(UI.all) + "</button>" +
+        Object.keys(S.tags).filter(function (k) { return used[k]; }).map(function (k) {
+          return '<button data-tag="' + k + '"' + (active === k ? ' class="on"' : "") + ">" + esc(t(S.tags[k])) + "</button>";
+        }).join("") + "</div>";
+      var list = sortedProjects().filter(function (p) { return active === "all" || (p.tags || []).indexOf(active) > -1; });
+      return '<section class="page-head"><h1>' + t(UI.works) + "</h1>" + filters + "</section>" +
+        '<div class="grid">' + list.map(card).join("") + "</div>";
+    },
+
+    project: function () {
+      var id = new URLSearchParams(location.search).get("id");
+      var list = sortedProjects();
+      var i = list.findIndex(function (p) { return p.id === id; });
+      if (i < 0) return '<p class="empty">' + t(UI.notFound) + ' <a href="works.html">' + t(UI.back) + "</a></p>";
+      var p = list[i], next = list[(i + 1) % list.length];
+      document.title = t(p.title) + " — " + t(S.name);
+      var tags = (p.tags || []).map(function (k) {
+        return S.tags[k] ? '<a href="works.html?tag=' + k + '">' + esc(t(S.tags[k])) + "</a>" : "";
+      }).join("");
+      return '<a class="back" href="works.html">← ' + t(UI.back) + "</a>" +
+        '<article class="project"><header class="project-head"><h1>' + esc(t(p.title)) + "</h1>" +
+        (lang === "zh" && p.title.en !== p.title.zh ? '<p class="alt-title">' + esc(p.title.en) + "</p>" : "") +
+        (lang === "en" && p.title.en !== p.title.zh ? '<p class="alt-title">' + esc(p.title.zh) + "</p>" : "") + "</header>" +
+        img(p.cover, t(p.title), "ratio-wide") +
+        '<div class="project-body"><dl class="facts"><div><dt>' + t(UI.year) + "</dt><dd>" + esc(p.year) + "</dd></div>" +
+        "<div><dt>" + t(UI.category) + "</dt><dd>" + esc(t(p.category)) + "</dd></div>" +
+        (p.materials ? "<div><dt>" + t(UI.materials) + "</dt><dd>" + esc(t(p.materials)) + "</dd></div>" : "") +
+        (tags ? '<div class="tags">' + tags + "</div>" : "") + "</dl>" +
+        '<div class="prose">' + paras(t(p.description)) + "</div></div>" +
+        videoEmbed(p.video) +
+        '<div class="gallery">' + (p.images || []).map(function (s) { return img(s, t(p.title), ""); }).join("") + "</div>" +
+        "</article>" +
+        (next && next.id !== p.id ? '<a class="next" href="' + projectUrl(next.id) + '"><span>' + t(UI.next) + "</span><strong>" + esc(t(next.title)) + " →</strong></a>" : "");
+    },
+
+    research: function () {
+      var fields = ["collected", "location", "source", "composition", "properties", "processing", "endOfLife", "notes"];
+      var items = S.materials.map(function (m) {
+        return '<article class="material">' + img(m.image, t(m.name), "ratio-sq") +
+          '<div class="material-body"><div class="material-head"><span class="mid">' + esc(m.id) + "</span>" +
+          (m.sample ? '<span class="badge">' + t(UI.sample) + "</span>" : "") + "</div>" +
+          "<h3>" + esc(t(m.name)) + '</h3><p class="card-sub">' + esc(t(m.category)) + "</p>" +
+          '<dl class="mfields">' + fields.filter(function (f) { return m[f]; }).map(function (f) {
+            return "<div><dt>" + t(UI[f]) + "</dt><dd>" + esc(t(m[f])) + "</dd></div>";
+          }).join("") + "</dl></div></article>";
+      }).join("");
+      return '<section class="page-head"><h1>' + esc(t(S.research.title)) + '</h1><p class="lead small">' + esc(t(S.research.intro)) + "</p>" +
+        '<p class="count">' + S.materials.length + " " + t(UI.entries) + "</p></section>" +
+        '<div class="materials">' + items + "</div>";
+    },
+
+    about: function () {
+      var a = S.about, c = S.contact;
+      function list(title, rows) {
+        if (!rows || !rows.length) return "";
+        return '<section class="cv"><h2>' + t(title) + "</h2><ul>" + rows.map(function (r) {
+          return "<li><span>" + esc(r.year) + "</span><span>" + esc(t(r.text)) + "</span></li>";
+        }).join("") + "</ul></section>";
+      }
+      var contacts = [];
+      if (c.email) contacts.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
+      if (c.instagram) contacts.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
+      if (c.linkedin) contacts.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
+      return '<section class="page-head"><h1>' + t(UI.about) + "</h1></section>" +
+        '<div class="about"><div class="prose big">' + paras(t(a.bio)) + "<p>" + esc(t(a.phd)) + "</p></div>" +
+        '<div class="about-side">' + list(UI.education, a.education) + list(UI.exhibitions, a.exhibitions) +
+        (contacts.length ? '<section class="cv"><h2>' + t(UI.contact) + '</h2><p class="contact">' + contacts.join("<br>") + "</p></section>" : "") +
+        "</div></div>";
+    }
+  };
+
+  /* ---------- 渲染 / Render ---------- */
+  function render() {
+    var page = document.body.getAttribute("data-page");
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.getElementById("site-header").innerHTML = header(page);
+    document.getElementById("app").innerHTML = pages[page] ? pages[page]() : "";
+    document.getElementById("site-footer").innerHTML = footer();
+    if (page !== "project") document.title = (page === "home" ? "" : t(UI[page]) + " — ") + t(S.name);
+
+    document.querySelectorAll("[data-lang]").forEach(function (b) {
+      b.onclick = function () { setLang(b.getAttribute("data-lang")); };
+    });
+    document.querySelectorAll("[data-tag]").forEach(function (b) {
+      b.onclick = function () {
+        var k = b.getAttribute("data-tag");
+        history.replaceState(null, "", k === "all" ? "works.html" : "works.html?tag=" + k);
+        render();
+      };
+    });
+  }
+  /* 轮播箭头 / Slider arrows */
+  function wireSlider() {
+    document.querySelectorAll(".slider").forEach(function (sl) {
+      var track = sl.querySelector(".track"), prev = sl.querySelector(".prev"), next = sl.querySelector(".next-btn");
+      function step(dir) {
+        var slide = track.querySelector(".slide");
+        var w = slide ? slide.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0) : track.clientWidth;
+        track.scrollBy({ left: dir * w, behavior: "smooth" });
+      }
+      prev.onclick = function () { step(-1); };
+      next.onclick = function () { step(1); };
+      function update() {
+        var max = track.scrollWidth - track.clientWidth - 2;
+        prev.disabled = track.scrollLeft <= 2;
+        next.disabled = track.scrollLeft >= max;
+      }
+      track.onscroll = update; window.addEventListener("resize", update); update();
+    });
+  }
+
+  /* 开屏 / Intro screen: 每次打开网站显示一次 / shown once per visit */
+  function splash() {
+    var cfg = S.splash || {};
+    if (!cfg.enabled || document.body.getAttribute("data-page") !== "home") return;
+    try { if (sessionStorage.getItem("introSeen")) return; sessionStorage.setItem("introSeen", "1"); } catch (e) {}
+    var el = document.createElement("div");
+    el.className = "splash";
+    el.innerHTML = (cfg.video ? '<video src="' + esc(cfg.video) + '" autoplay muted loop playsinline' + (cfg.image ? ' poster="' + esc(cfg.image) + '"' : "") + "></video>" :
+      (cfg.image ? '<img src="' + esc(cfg.image) + '" alt="" onerror="this.remove()">' : "")) +
+      '<div class="splash-name"><span class="brand-main">' + esc(S.name.en) + '</span><span class="brand-sub">' + esc(S.name.zh) + "</span></div>" +
+      '<button class="splash-skip">' + t(UI.skip) + " ↓</button>";
+    document.body.appendChild(el);
+    document.body.classList.add("no-scroll");
+    var done = false;
+    function close() {
+      if (done) return; done = true;
+      el.classList.add("out"); document.body.classList.remove("no-scroll");
+      setTimeout(function () { el.remove(); }, 900);
+    }
+    el.onclick = close;
+    window.addEventListener("wheel", close, { once: true, passive: true });
+    window.addEventListener("touchmove", close, { once: true, passive: true });
+    setTimeout(close, (cfg.seconds || 3) * 1000);
+  }
+
+  var _render = render;
+  render = function () { _render(); wireSlider(); fitStitches(); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStitches);
+  render();
+  splash();
+})();
