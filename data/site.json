@@ -35,13 +35,17 @@
     "seconds": 4.7
   },
   "sections": {
-    "fashion": {
-      "zh": "服装系列",
-      "en": "Fashion Collection"
+    "craft": {
+      "zh": "工艺探索",
+      "en": "Craft Exploration"
     },
-    "process": {
-      "zh": "制作过程 / 花絮",
-      "en": "Process"
+    "material": {
+      "zh": "材料探索",
+      "en": "Material Exploration"
+    },
+    "others": {
+      "zh": "其他",
+      "en": "Others"
     }
   }
 }

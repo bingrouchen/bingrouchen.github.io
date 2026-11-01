@@ -8,6 +8,7 @@
     return fetch("data/" + name + ".json?t=" + Math.floor(Date.now() / 60000), { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw new Error(name); return r.json(); });
   }
+  var SECTIONS = ["craft", "material", "others"];   /* 菜单分区的顺序 / order of the menu sections */
   function slug(x) { return String(x || "").toLowerCase().trim().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, ""); }
   function build(site, projects, materials, about) {
     var s = site; s.projects = (projects && projects.works) || projects || []; s.materials = materials || []; s.about = about || {};
@@ -24,22 +25,28 @@
       }).filter(Boolean);
     });
     s.featured = (s.featured || []).map(function (f) { return slug(f); });
-    /* 作品分区：服装系列 / 制作过程（名称可在 Pages CMS 的网站设置里改）
-       Works sections: Fashion Collection / Process (names editable in Site settings) */
+    /* 作品分区：工艺探索 / 材料探索 / 其他（名称可在 Pages CMS 的网站设置里改）
+       Works sections: Craft / Material / Others (names editable in Site settings) */
     s.sections = s.sections || {};
-    ["fashion", "process"].forEach(function (k) {
+    SECTIONS.forEach(function (k) {
       var v = s.sections[k] || {};
       s.sections[k] = { zh: v.zh || UI[k].zh, en: v.en || UI[k].en };
     });
-    s.projects.forEach(function (p) { p.section = p.section === "process" ? "process" : "fashion"; });
+    var OLD = { fashion: "craft", process: "others" };
+    s.projects = s.projects.filter(function (p) { return !p.draft; });   /* 草稿不显示 / drafts stay hidden */
+    s.projects.forEach(function (p) {
+      p.section = OLD[p.section] || p.section;
+      if (SECTIONS.indexOf(p.section) < 0) p.section = "others";
+    });
     return s;
   }
 
   /* ---------- 界面文字 / Interface text ---------- */
   var UI = {
     works:      { zh: "作品", en: "Works" },
-    fashion:    { zh: "服装系列", en: "Fashion Collection" },
-    process:    { zh: "制作过程 / 花絮", en: "Process" },
+    craft:      { zh: "工艺探索", en: "Craft Exploration" },
+    material:   { zh: "材料探索", en: "Material Exploration" },
+    others:     { zh: "其他", en: "Others" },
     soon:       { zh: "内容即将更新。", en: "Coming soon." },
     research:   { zh: "研究", en: "Research" },
     about:      { zh: "关于", en: "About" },
@@ -163,14 +170,14 @@
         }).join("") + "</ul>" : "") + "</li>";
     }
     return '<div class="menu"><ul><li><a class="menu-head" href="works.html">' + t(UI.all) + "</a></li>" +
-      group("fashion") + group("process") + "</ul></div>";
+      SECTIONS.map(group).join("") + "</ul></div>";
   }
   function footer() {
     var c = S.contact, items = [];
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.4</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v2.5</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -190,7 +197,7 @@
       var all = sortedProjects();
       var feat = (S.featured && S.featured.length) ? S.featured.map(function (id) {
         return all.filter(function (p) { return p.id === id; })[0];
-      }).filter(Boolean) : all.filter(function (p) { return p.section === "fashion"; });
+      }).filter(Boolean) : all.filter(function (p) { return p.section !== "others"; });
       /* 每个项目一组可左右翻的图片，下面是项目名称链接
          One swipeable row of images per project, with the project title link below */
       return feat.map(function (p) {
@@ -210,13 +217,12 @@
     works: function () {
       var q = new URLSearchParams(location.search);
       var sec = q.get("section"), tag = q.get("tag");
-      if (sec !== "fashion" && sec !== "process") sec = "all";
+      if (SECTIONS.indexOf(sec) < 0) sec = "all";
       function f(k, href, label) {
         return '<a href="' + href + '"' + (!tag && sec === k ? ' class="on"' : "") + ">" + esc(label) + "</a>";
       }
       var filters = '<div class="filters">' + f("all", "works.html", t(UI.all)) +
-        f("fashion", "works.html?section=fashion", t(S.sections.fashion)) +
-        f("process", "works.html?section=process", t(S.sections.process)) +
+        SECTIONS.map(function (k) { return f(k, "works.html?section=" + k, t(S.sections[k])); }).join("") +
         (tag && S.tags[tag] ? '<a class="on" href="works.html?tag=' + tag + '">#' + esc(t(S.tags[tag])) + "</a>" : "") + "</div>";
       var list = sortedProjects().filter(function (p) {
         if (tag) return (p.tags || []).indexOf(tag) > -1;

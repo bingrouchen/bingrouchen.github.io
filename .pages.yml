@@ -36,10 +36,16 @@ content:
       description: 决定它出现在 WORKS 菜单的哪一栏 / Decides which part of the WORKS menu it appears under.
       options:
         values:
-        - name: fashion
-          label: 服装系列 Fashion Collection
-        - name: process
-          label: 制作过程 / 花絮 Process
+        - name: craft
+          label: 工艺探索 Craft Exploration
+        - name: material
+          label: 材料探索 Material Exploration
+        - name: others
+          label: 其他 Others
+    - name: draft
+      label: 草稿，暂不在网站上显示 Draft (hidden from the site)
+      type: boolean
+      description: 内容填好后取消勾选，就会出现在网站上 / Untick when it's ready, and it will appear on the site.
     - name: year
       label: 年份 Year
       type: number
@@ -346,8 +352,8 @@ content:
     label: WORKS 菜单分区名称 WORKS menu names
     type: object
     fields:
-    - name: fashion
-      label: 服装系列 Fashion Collection
+    - name: craft
+      label: 工艺探索 Craft Exploration
       type: object
       fields:
       - name: zh
@@ -356,8 +362,18 @@ content:
       - name: en
         label: English
         type: string
-    - name: process
-      label: 制作过程 / 花絮 Process
+    - name: material
+      label: 材料探索 Material Exploration
+      type: object
+      fields:
+      - name: zh
+        label: 中文
+        type: string
+      - name: en
+        label: English
+        type: string
+    - name: others
+      label: 其他 Others
       type: object
       fields:
       - name: zh

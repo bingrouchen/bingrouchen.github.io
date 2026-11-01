@@ -3,7 +3,7 @@
     {
       "title": "NO ANGLE",
       "title_en": "NO ANGLE",
-      "section": "fashion",
+      "section": "craft",
       "year": 2019,
       "category": {
         "zh": "服装系列",
@@ -43,12 +43,13 @@
       "materials": {
         "zh": "橡皮圈、金属环、透明亚克力球",
         "en": "Rubber bands, metal rings, clear acrylic spheres"
-      }
+      },
+      "draft": false
     },
     {
       "title": "陈迹·新渊",
       "title_en": "The Shape of Old Memory",
-      "section": "fashion",
+      "section": "material",
       "year": 2022,
       "category": {
         "zh": "服装系列",
@@ -88,6 +89,115 @@
       "materials": {
         "zh": "金属珠链、环氧树脂滴胶",
         "en": "Metal bead chains, epoxy resin"
+      },
+      "draft": false
+    },
+    {
+      "title": "COCLE",
+      "title_en": "COCLE",
+      "section": "craft",
+      "draft": true,
+      "year": 2026,
+      "category": {
+        "zh": "服装系列",
+        "en": "Fashion Collection"
+      },
+      "tags": [],
+      "cover": "",
+      "images": [],
+      "video": "",
+      "summary": {
+        "zh": "",
+        "en": ""
+      },
+      "description": {
+        "zh": "",
+        "en": ""
+      },
+      "materials": {
+        "zh": "",
+        "en": ""
+      }
+    },
+    {
+      "title": "XUN",
+      "title_en": "XUN",
+      "section": "craft",
+      "draft": true,
+      "year": 2026,
+      "category": {
+        "zh": "服装系列",
+        "en": "Fashion Collection"
+      },
+      "tags": [],
+      "cover": "",
+      "images": [],
+      "video": "",
+      "summary": {
+        "zh": "",
+        "en": ""
+      },
+      "description": {
+        "zh": "",
+        "en": ""
+      },
+      "materials": {
+        "zh": "",
+        "en": ""
+      }
+    },
+    {
+      "title": "Nephele",
+      "title_en": "Nephele",
+      "section": "craft",
+      "draft": true,
+      "year": 2026,
+      "category": {
+        "zh": "服装系列",
+        "en": "Fashion Collection"
+      },
+      "tags": [],
+      "cover": "",
+      "images": [],
+      "video": "",
+      "summary": {
+        "zh": "",
+        "en": ""
+      },
+      "description": {
+        "zh": "",
+        "en": ""
+      },
+      "materials": {
+        "zh": "",
+        "en": ""
+      }
+    },
+    {
+      "title": "沉•迹",
+      "title_en": "Sunken Treasure",
+      "section": "material",
+      "draft": true,
+      "year": 2026,
+      "category": {
+        "zh": "服装系列",
+        "en": "Fashion Collection"
+      },
+      "tags": [],
+      "cover": "",
+      "images": [],
+      "video": "",
+      "summary": {
+        "zh": "",
+        "en": ""
+      },
+      "description": {
+        "zh": "",
+        "en": ""
+      },
+      "materials": {
+        "zh": "",
+        "en": ""
       }
     }
   ]
