@@ -102,6 +102,39 @@ content:
         options:
           path: images/projects
         description: 建议竖版 3:4；点开网站上的图片可以看完整大图 / Portrait 3:4 recommended; visitors can click to see the full image.
+    - name: process
+      label: 创作过程 Creative process
+      type: object
+      description: 显示在最后一个 Look 下面；照片可以左右滑动 / Shown below the last look; the photos scroll sideways.
+      fields:
+      - name: title
+        label: 标题 Title
+        type: object
+        fields:
+        - name: zh
+          label: 中文
+          type: string
+        - name: en
+          label: English
+          type: string
+      - name: text
+        label: 创作思路 Thoughts
+        type: object
+        fields:
+        - name: zh
+          label: 中文
+          type: text
+        - name: en
+          label: English
+          type: text
+        description: 空一行就是分段，可以留空 / Leave a blank line between paragraphs; can be left empty.
+      - name: images
+        label: 过程照片 Process photos
+        type: image
+        list: true
+        options:
+          path: images/projects
+        description: 横图竖图都可以，会按原比例显示；拖动可调整顺序 / Portrait or landscape both work and keep their proportions; drag to reorder.
     - name: images
       label: 更多图片 More images
       type: image

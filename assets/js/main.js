@@ -49,6 +49,7 @@
     others:     { zh: "其他", en: "Others" },
     soon:       { zh: "内容即将更新。", en: "Coming soon." },
     close:      { zh: "关闭", en: "Close" },
+    process:    { zh: "一些创作过程中的思考", en: "Notes on the Creative Process" },
     research:   { zh: "研究", en: "Research" },
     about:      { zh: "关于", en: "About" },
     all:        { zh: "全部", en: "All" },
@@ -191,7 +192,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.2</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.3</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -262,6 +263,26 @@
           }).join("") + "</div></div>";
       }).join("") + "</div>";
     }).join("") + "</section>";
+  }
+
+  /* 创作过程：标题 + 文字 + 可左右滑动的照片，鼠标停在哪张，哪张就浮起放大
+     Creative process: title + text + a sideways-scrolling strip; the photo under the mouse lifts and enlarges */
+  function processPart(p) {
+    var pr = p.process;
+    if (!pr) return "";
+    var pics = (pr.images || []).filter(Boolean);
+    var title = t(pr.title) || t(UI.process);
+    var text = t(pr.text);
+    var slides = pics.length ? pics.map(function (src) {
+      var r = ratioOf(src);
+      return '<div class="pslide ph zoomable" style="aspect-ratio:' + r.toFixed(4) + '"><img src="' + esc(src) + '" alt="' + esc(title) +
+        '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>';
+    }).join("") : [1, 2, 3, 4, 5, 6].map(function () { return '<div class="pslide ph missing" style="aspect-ratio:2/3"></div>'; }).join("");
+    return '<section class="process"><h2 class="look-name">' + esc(title) + "</h2>" +
+      (text ? '<div class="process-text"><div class="prose">' + paras(text) + "</div></div>" : "") +
+      '<div class="slider process-slider"><div class="track ptrack">' + slides + "</div>" +
+      '<button class="arrow prev" aria-label="' + t(UI.prev) + '"></button>' +
+      '<button class="arrow next-btn" aria-label="' + t(UI.nextSlide) + '"></button></div></section>';
   }
 
   /* 点击图片看完整大图 / click an image to see it whole */
@@ -353,6 +374,7 @@
         (tags ? '<div class="tags">' + tags + "</div>" : "") + "</dl>" +
         '<div class="prose">' + paras(t(p.description)) + "</div></div>" +
         looks(p) +
+        processPart(p) +
         videoEmbed(p.video) +
         ((p.images || []).length ? '<div class="gallery">' + p.images.map(function (s) { return img(s, t(p.title), "zoomable"); }).join("") + "</div>" : "") +
         "</article>" +
@@ -421,7 +443,7 @@
     document.querySelectorAll(".slider").forEach(function (sl) {
       var track = sl.querySelector(".track"), prev = sl.querySelector(".prev"), next = sl.querySelector(".next-btn");
       function step(dir) {
-        var slide = track.querySelector(".slide");
+        var slide = track.querySelector(".slide, .pslide");
         var w = slide ? slide.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0) : track.clientWidth;
         track.scrollBy({ left: dir * w, behavior: "smooth" });
       }

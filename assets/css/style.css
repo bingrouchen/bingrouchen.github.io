@@ -395,3 +395,30 @@ body.no-scroll { overflow: hidden; }
   .look-line { flex-direction: column; gap: clamp(40px, 8vw, 56px); }
   .look-line .look { flex: none !important; width: 100%; }
 }
+
+/* ---------- 创作过程 / Creative process ----------
+   --strip-h：照片条的高度 / height of the photo strip */
+.process { --strip-h: clamp(300px, 34vw, 440px); margin: clamp(56px, 8vw, 104px) 0 clamp(40px, 6vw, 80px); }
+.process-text { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--col-gap); margin-bottom: clamp(20px, 3vw, 32px); }
+.process-text .prose { grid-column: 2 / span 2; font-size: 14px; line-height: 1.85; max-width: none; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.process-text .prose p + p { margin-top: .9em; }
+.ptrack {
+  display: flex; gap: var(--col-gap); grid-auto-flow: unset;
+  padding: 26px 16px;             /* 给放大的照片留出空间 / room for the enlarged photo */
+  margin: -26px -16px;
+  scroll-padding-left: 16px;
+}
+.pslide { flex: none; height: var(--strip-h); width: auto; scroll-snap-align: start; cursor: zoom-in;
+  transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease, opacity .35s ease; }
+.pslide.missing { cursor: default; }
+/* 鼠标停在一张上：这张浮起放大，其它的变淡 / hover: this one lifts and enlarges, the others fade */
+.ptrack:hover .pslide:not(.missing) { opacity: .5; }
+.ptrack .pslide:not(.missing):hover { opacity: 1; transform: scale(1.07); z-index: 2; box-shadow: 0 18px 40px -14px rgba(30, 30, 25, .35); }
+.ptrack .pslide img { transition: none; }
+.process-slider .arrow { top: 50%; }
+@media (hover: none) { .ptrack:hover .pslide { opacity: 1; } }
+@media (max-width: 720px) {
+  .process { --strip-h: 300px; }
+  .process-text { grid-template-columns: 1fr; }
+  .process-text .prose { grid-column: 1; }
+}

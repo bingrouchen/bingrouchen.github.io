@@ -76,6 +76,17 @@
       "materials": {
         "zh": "橡皮圈、金属环、透明亚克力球",
         "en": "Rubber bands, metal rings, clear acrylic spheres"
+      },
+      "process": {
+        "title": {
+          "zh": "一些创作过程中的思考",
+          "en": "Notes on the Creative Process"
+        },
+        "text": {
+          "zh": "",
+          "en": ""
+        },
+        "images": []
       }
     },
     {
