@@ -91,6 +91,10 @@ content:
         label: 名称 Name
         type: string
         description: 例如 Look 1 / e.g. Look 1
+      - name: sameRow
+        label: 和上一个 Look 并排 Beside the previous look
+        type: boolean
+        description: 勾上后，这个 Look 会和上一个放在同一行 / When ticked, this look sits in the same row as the one before it.
       - name: images
         label: 图片 Photos
         type: image

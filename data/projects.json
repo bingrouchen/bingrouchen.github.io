@@ -46,7 +46,8 @@
           "images": [
             "/images/projects/Look2-1.jpg",
             "/images/projects/Look2-2.jpg"
-          ]
+          ],
+          "sameRow": true
         },
         {
           "name": "Look 3",
@@ -62,7 +63,8 @@
             "/images/projects/Look4-1.jpg",
             "/images/projects/Look4-2.jpg",
             "/images/projects/Look4-3.jpg"
-          ]
+          ],
+          "sameRow": true
         }
       ],
       "summary": {

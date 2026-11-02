@@ -385,3 +385,13 @@ body.no-scroll { overflow: hidden; }
   .look-row { flex-direction: column; max-width: none !important; }
   .look-row .ph { flex: none !important; width: 100%; }
 }
+
+/* ---------- 两个 Look 并排 / two looks side by side ---------- */
+.look-line { display: flex; gap: var(--col-gap); align-items: flex-start; }
+.look-line + .look, .look + .look-line, .look-line + .look-line { margin-top: clamp(40px, 6vw, 72px); }
+.look-line .look { min-width: 0; }
+.look-line .look + .look { margin-top: 0; }
+@media (max-width: 720px) {
+  .look-line { flex-direction: column; gap: clamp(40px, 8vw, 56px); }
+  .look-line .look { flex: none !important; width: 100%; }
+}

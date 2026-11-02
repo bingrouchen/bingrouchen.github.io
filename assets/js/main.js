@@ -191,7 +191,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.1</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.2</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -237,11 +237,30 @@
   function looks(p) {
     var L = (p.looks || []).filter(function (l) { return l && (l.name || (l.images || []).length); });
     if (!L.length) return "";
-    return '<section class="looks">' + L.map(function (l) {
-      var pics = (l.images || []).filter(Boolean).map(function (src) { return { src: src, r: ratioOf(src) }; });
-      var body = pics.length ? splitRows(pics).map(function (row) { return photoRow(row, t(p.title) + " " + (l.name || "")); }).join("")
-        : '<div class="look-row">' + [1, 2, 3].map(function () { return '<div class="ph missing" style="flex:1 1 0;aspect-ratio:2/3"></div>'; }).join("") + "</div>";
-      return '<div class="look"><h2 class="look-name">' + esc(l.name || "") + "</h2>" + body + "</div>";
+    var alt = function (l) { return t(p.title) + " " + (l.name || ""); };
+    var ph3 = '<div class="look-row">' + [1, 2, 3].map(function () { return '<div class="ph missing" style="flex:1 1 0;aspect-ratio:2/3"></div>'; }).join("") + "</div>";
+    function pics(l) { return (l.images || []).filter(Boolean).map(function (src) { return { src: src, r: ratioOf(src) }; }); }
+    /* 勾了“和上一个 Look 并排”的放进同一行 / looks marked “beside the previous look” share a line */
+    var lines = [];
+    L.forEach(function (l) { if (l.sameRow && lines.length) lines[lines.length - 1].push(l); else lines.push([l]); });
+    return '<section class="looks">' + lines.map(function (line) {
+      if (line.length === 1) {
+        var l = line[0], ps = pics(l);
+        return '<div class="look"><h2 class="look-name">' + esc(l.name || "") + "</h2>" +
+          (ps.length ? splitRows(ps).map(function (row) { return photoRow(row, alt(l)); }).join("") : ph3) + "</div>";
+      }
+      /* 并排：所有照片同一高度，每个 Look 按照片宽度分配位置
+         Side by side: every photo shares one height; each look gets width in proportion to its photos */
+      return '<div class="look-line">' + line.map(function (l) {
+        var ps = pics(l); if (!ps.length) ps = [{ src: "", r: 2 / 3 }];
+        var sum = ps.reduce(function (n, x) { return n + x.r; }, 0);
+        return '<div class="look" style="flex:' + sum.toFixed(4) + ' 1 calc(var(--col-gap) * ' + (ps.length - 1) + ')">' +
+          '<h2 class="look-name">' + esc(l.name || "") + "</h2>" +
+          '<div class="look-row">' + ps.map(function (x) {
+            return x.src ? '<div class="ph zoomable" style="flex:' + x.r.toFixed(4) + ' 1 0;aspect-ratio:' + x.r.toFixed(4) + '"><img src="' + esc(x.src) + '" alt="' + esc(alt(l)) + '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>'
+                         : '<div class="ph missing" style="flex:1 1 0;aspect-ratio:2/3"></div>';
+          }).join("") + "</div></div>";
+      }).join("") + "</div>";
     }).join("") + "</section>";
   }
 
