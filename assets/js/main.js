@@ -192,7 +192,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.4</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.5</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -273,13 +273,16 @@
     var pics = (pr.images || []).filter(Boolean);
     var title = t(pr.title) || t(UI.process);
     var text = t(pr.text);
-    /* 一屏 4 格：竖图占 1 格，横图占 2 格，所以两端总是对齐
-       Four slots per view: portraits take one slot, landscapes two, so both ends always line up */
-    var slides = pics.length ? pics.map(function (src) {
-      var wide = ratioOf(src) > 1.1;
-      return '<div class="pslide ph zoomable' + (wide ? " wide" : "") + '"><img src="' + esc(src) + '" alt="' + esc(title) +
-        '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>';
-    }).join("") : [1, 2, 3, 4, 5, 6].map(function () { return '<div class="pslide ph missing"></div>'; }).join("");
+    /* 一屏 4 格：竖图占 1 格，横图占 2 格；每张下面可以有一句简短说明
+       Four slots per view: portraits take one slot, landscapes two; each photo can have a short caption */
+    var items = (pr.photos || []).filter(function (x) { return x && x.image; })
+      .concat(pics.map(function (src) { return { image: src }; }));
+    var slides = items.length ? items.map(function (x) {
+      var wide = ratioOf(x.image) > 1.1, cap = t(x.caption);
+      return '<figure class="pcell' + (wide ? " wide" : "") + '"><div class="pslide ph zoomable" data-caption="' + esc(cap) + '"><img src="' + esc(x.image) + '" alt="' + esc(cap || title) +
+        '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>' +
+        (cap ? "<figcaption>" + esc(cap) + "</figcaption>" : "") + "</figure>";
+    }).join("") : [1, 2, 3, 4, 5, 6].map(function () { return '<figure class="pcell"><div class="pslide ph missing"></div></figure>'; }).join("");
     return '<section class="process"><h2 class="look-name">' + esc(title) + "</h2>" +
       (text ? '<div class="process-text"><div class="prose">' + paras(text) + "</div></div>" : "") +
       '<div class="slider process-slider"><div class="track ptrack">' + slides + "</div>" +
@@ -290,23 +293,23 @@
   /* 点击图片看完整大图 / click an image to see it whole */
   function wireLightbox() {
     var imgs = [].slice.call(document.querySelectorAll("#app .zoomable img"));
-    imgs.forEach(function (im, i) {
-      im.parentNode.onclick = function () { openBox(imgs.map(function (x) { return x.src; }), i); };
-    });
+    var list = imgs.map(function (x) { return { src: x.src, cap: x.parentNode.getAttribute("data-caption") || "" }; });
+    imgs.forEach(function (im, i) { im.parentNode.onclick = function () { openBox(list, i); }; });
   }
   function openBox(list, i) {
     var box = document.createElement("div");
     box.className = "lightbox";
-    box.innerHTML = '<img alt=""><button class="lb-close" aria-label="' + t(UI.close) + '">×</button>' +
+    box.innerHTML = '<figure class="lb-fig"><img alt=""><figcaption class="lb-cap"></figcaption></figure><button class="lb-close" aria-label="' + t(UI.close) + '">×</button>' +
       (list.length > 1 ? '<button class="lb-prev" aria-label="' + t(UI.prev) + '"></button><button class="lb-next" aria-label="' + t(UI.nextSlide) + '"></button>' : "");
     var pic = box.querySelector("img");
-    function show(k) { i = (k + list.length) % list.length; pic.src = list[i]; }
+    var capEl = box.querySelector(".lb-cap");
+    function show(k) { i = (k + list.length) % list.length; pic.src = list[i].src; capEl.textContent = list[i].cap; }
     function close() { box.remove(); document.removeEventListener("keydown", key); document.body.classList.remove("no-scroll"); }
     function key(e) { if (e.key === "Escape") close(); if (e.key === "ArrowRight") show(i + 1); if (e.key === "ArrowLeft") show(i - 1); }
     box.onclick = function (e) {
       if (e.target.classList.contains("lb-next")) show(i + 1);
       else if (e.target.classList.contains("lb-prev")) show(i - 1);
-      else if (e.target !== pic) close();
+      else if (e.target !== pic && e.target !== capEl) close();
     };
     document.addEventListener("keydown", key);
     document.body.appendChild(box); document.body.classList.add("no-scroll");
@@ -445,7 +448,7 @@
     document.querySelectorAll(".slider").forEach(function (sl) {
       var track = sl.querySelector(".track"), prev = sl.querySelector(".prev"), next = sl.querySelector(".next-btn");
       function step(dir) {
-        var slide = track.querySelector(".slide, .pslide:not(.wide)");
+        var slide = track.querySelector(".slide, .pcell:not(.wide)");
         var w = slide ? slide.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0) : track.clientWidth;
         track.scrollBy({ left: dir * w, behavior: "smooth" });
       }

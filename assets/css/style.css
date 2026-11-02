@@ -319,7 +319,7 @@ body.no-scroll { overflow: hidden; }
 .look-grid .zoomable:hover img, .gallery .zoomable:hover img { transform: scale(1.02); }
 
 /* ---------- 大图查看 / Lightbox ---------- */
-.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(255,255,255,.97); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 56px); cursor: zoom-out; animation: lbIn .3s ease; }
+.lightbox { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 56px); cursor: zoom-out; animation: lbIn .3s ease; }
 .lightbox img { position: static; width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; cursor: default; }
 .lb-close { position: absolute; top: 14px; right: 20px; font-size: 30px; line-height: 1; color: var(--ink); }
 .lb-prev, .lb-next { position: absolute; top: 50%; width: 48px; height: 72px; transform: translateY(-50%); }
@@ -405,17 +405,28 @@ body.no-scroll { overflow: hidden; }
 .ptrack {
   --per: 4;                       /* 一屏几格 / slots per view */
   --slot: calc((100% - (var(--per) - 1) * var(--col-gap)) / var(--per));
-  display: grid; grid-auto-flow: column; grid-auto-columns: var(--slot); gap: var(--col-gap);
+  container-type: inline-size;
+  display: grid; grid-auto-flow: column; grid-auto-columns: var(--slot); gap: var(--col-gap); align-items: start;
   padding: 26px 0; margin: -26px 0;   /* 上下留出放大的空间，左右与内容对齐 / vertical room for enlarging; sides stay aligned */
 }
-.pslide { aspect-ratio: 2 / 3; scroll-snap-align: start; cursor: zoom-in;
-  transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease, opacity .35s ease; }
-.pslide.wide { grid-column: span 2; aspect-ratio: auto; }
+.pcell { margin: 0; scroll-snap-align: start; transition: opacity .35s ease; }
+.pcell.wide { grid-column: span 2; }
+/* 每格高度一样（竖版 2:3 的高度）/ every slot has the same height (that of a 2:3 portrait) */
+.pslide { height: calc((100cqw - (var(--per) - 1) * var(--col-gap)) / var(--per) * 1.5); cursor: zoom-in;
+  transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease; }
 .pslide.missing { cursor: default; }
+.pcell figcaption { margin-top: 10px; font-size: 12px; line-height: 1.55; color: var(--ink); opacity: .8; }
 /* 鼠标停在一张上：这张浮起放大，其它的变淡 / hover: this one lifts and enlarges, the others fade */
-.ptrack:hover .pslide:not(.missing) { opacity: .5; }
-.ptrack .pslide:not(.missing):hover { opacity: 1; transform: scale(1.06); z-index: 2; box-shadow: 0 18px 40px -14px rgba(30, 30, 25, .35); }
+.ptrack:hover .pcell { opacity: .5; }
+.ptrack .pcell:hover { opacity: 1; }
+.ptrack .pslide:not(.missing):hover { transform: scale(1.06); z-index: 2; position: relative; box-shadow: 0 18px 40px -14px rgba(30, 30, 25, .35); }
 .ptrack .pslide img { transition: none; }
+@media (hover: none) { .ptrack:hover .pcell { opacity: 1; } }
+/* 大图下的说明 / caption under the full-size image */
+.lb-fig { margin: 0; display: flex; flex-direction: column; align-items: center; max-width: 100%; max-height: 100%; }
+.lb-fig img { max-height: calc(100vh - 120px); }
+.lb-cap { margin-top: 12px; font-size: 13px; color: var(--ink); text-align: center; max-width: 640px; cursor: default; }
+.lb-cap:empty { display: none; }
 .process-slider .arrow { top: 50%; }
 @media (hover: none) { .ptrack:hover .pslide { opacity: 1; } }
 @media (max-width: 720px) {

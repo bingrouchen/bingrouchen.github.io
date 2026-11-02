@@ -118,7 +118,7 @@ content:
           label: English
           type: string
       - name: text
-        label: 创作思路 Thoughts
+        label: 文字说明 Text
         type: object
         fields:
         - name: zh
@@ -127,14 +127,30 @@ content:
         - name: en
           label: English
           type: text
-        description: 空一行就是分段，可以留空 / Leave a blank line between paragraphs; can be left empty.
-      - name: images
+        description: 显示在标题下、照片上方的一段说明；空一行就是分段；留空则不显示 / A short text under the title, above the photos; blank line = new paragraph; hidden when empty.
+      - name: photos
         label: 过程照片 Process photos
-        type: image
-        list: true
-        options:
-          path: images/projects
-        description: 横图竖图都可以，会按原比例显示；拖动可调整顺序 / Portrait or landscape both work and keep their proportions; drag to reorder.
+        type: object
+        description: 每张照片可以配一句简短说明，显示在照片下面和大图里；拖动可调整顺序 / Each photo can have a short caption, shown under it and in the full-size view; drag to reorder.
+        list:
+          collapsible:
+            collapsed: true
+        fields:
+        - name: image
+          label: 照片 Photo
+          type: image
+          options:
+            path: images/projects
+        - name: caption
+          label: 说明 Caption
+          type: object
+          fields:
+          - name: zh
+            label: 中文
+            type: string
+          - name: en
+            label: English
+            type: string
     - name: images
       label: 更多图片 More images
       type: image
