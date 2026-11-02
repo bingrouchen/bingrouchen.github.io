@@ -191,7 +191,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.0</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.1</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -205,16 +205,43 @@
     return S.projects.slice().sort(function (a, b) { return b.year - a.year; });
   }
 
-  /* 每套 Look 一行展示窗口；没有图片时先显示占位框
-     One row of image windows per look; placeholders until photos are added */
+  /* Looks 自动排版：按照片数量和横竖构图分行，每行等高、铺满整行、照片不裁切
+     Automatic Look layout: photos are split into rows by count and orientation;
+     each row has one height, fills the full width, and no photo is cropped */
+  var ROW_MAX = 2.9;   /* 一行最多放多“宽”：约等于 4 张竖图或 2 张横图 / widest row ≈ 4 portraits or 2 landscapes */
+  function ratioOf(src) {
+    var z = S.sizes && S.sizes[src];
+    return z && z[0] && z[1] ? z[0] / z[1] : 2 / 3;
+  }
+  function splitRows(items) {
+    var total = items.reduce(function (n, x) { return n + x.r; }, 0);
+    var k = Math.max(1, Math.ceil(total / ROW_MAX)), target = total / k;
+    var rows = [], row = [], sum = 0;
+    items.forEach(function (x, i) {
+      row.push(x); sum += x.r;
+      var left = items.length - i - 1;
+      if (rows.length < k - 1 && sum >= target * 0.92 && left > 0) { rows.push(row); row = []; sum = 0; }
+    });
+    if (row.length) rows.push(row);
+    return rows;
+  }
+  function photoRow(row, alt) {
+    var sum = row.reduce(function (n, x) { return n + x.r; }, 0);
+    /* 只有一张竖图时不要铺满整行，限制高度并居中 / a lone portrait is capped in height and centred */
+    var cap = sum < 1.3 ? ' style="max-width:calc(82vh * ' + sum.toFixed(3) + ')"' : "";
+    return '<div class="look-row"' + cap + ">" + row.map(function (x) {
+      return '<div class="ph zoomable" style="flex:' + x.r.toFixed(4) + ' 1 0;aspect-ratio:' + x.r.toFixed(4) + '">' +
+        '<img src="' + esc(x.src) + '" alt="' + esc(alt) + '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>';
+    }).join("") + "</div>";
+  }
   function looks(p) {
     var L = (p.looks || []).filter(function (l) { return l && (l.name || (l.images || []).length); });
     if (!L.length) return "";
     return '<section class="looks">' + L.map(function (l) {
-      var pics = (l.images || []).filter(Boolean);
-      var cells = pics.length ? pics.map(function (src) { return img(src, t(p.title) + " " + (l.name || ""), "zoomable"); }).join("")
-                              : '<div class="ph missing"></div><div class="ph missing"></div><div class="ph missing"></div>';
-      return '<div class="look"><h2 class="look-name">' + esc(l.name || "") + '</h2><div class="look-grid">' + cells + "</div></div>";
+      var pics = (l.images || []).filter(Boolean).map(function (src) { return { src: src, r: ratioOf(src) }; });
+      var body = pics.length ? splitRows(pics).map(function (row) { return photoRow(row, t(p.title) + " " + (l.name || "")); }).join("")
+        : '<div class="look-row">' + [1, 2, 3].map(function () { return '<div class="ph missing" style="flex:1 1 0;aspect-ratio:2/3"></div>'; }).join("") + "</div>";
+      return '<div class="look"><h2 class="look-name">' + esc(l.name || "") + "</h2>" + body + "</div>";
     }).join("") + "</section>";
   }
 
@@ -465,8 +492,11 @@
   }
   window.addEventListener("hashchange", jumpToHash);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStitches);
-  Promise.all(["site", "projects", "materials", "about"].map(load)).then(function (d) {
+  var sizes = fetch("images/sizes.json?t=" + Math.floor(Date.now() / 60000), { cache: "no-cache" })
+    .then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+  Promise.all(["site", "projects", "materials", "about"].map(load).concat([sizes])).then(function (d) {
     S = build(d[0], d[1], d[2], d[3]);
+    S.sizes = d[4] || {};
     render();
     jumpToHash();
     splash();

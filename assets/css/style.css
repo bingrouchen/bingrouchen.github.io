@@ -375,3 +375,13 @@ body.no-scroll { overflow: hidden; }
   .about-part { grid-template-columns: 1fr; row-gap: 16px; }
   .part-name, .part-body { grid-column: 1; }
 }
+
+/* ---------- Looks：按横竖构图自动分行 / rows laid out by photo orientation ---------- */
+.look-row { display: flex; gap: var(--col-gap); margin: 0 auto; }
+.look-row + .look-row { margin-top: var(--col-gap); }
+.look-row .ph { min-width: 0; }
+.look-row .zoomable:hover img { transform: scale(1.02); }
+@media (max-width: 720px) {
+  .look-row { flex-direction: column; max-width: none !important; }
+  .look-row .ph { flex: none !important; width: 100%; }
+}

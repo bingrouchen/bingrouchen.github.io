@@ -49,4 +49,26 @@ for folder, _, files in os.walk(ROOT):
             os.remove(tmp)
 
 print(f"{len(changed)} image(s) compressed")
+
+# 记录每张图片的宽高，网站用它按横竖构图排版
+# Record every image's width and height so the site can lay photos out by orientation
+import json
+sizes = {}
+for folder, _, files in os.walk(ROOT):
+    for name in files:
+        if os.path.splitext(name)[1].lower() not in EXTS:
+            continue
+        path = os.path.join(folder, name)
+        try:
+            w, h = ImageOps.exif_transpose(Image.open(path)).size
+        except Exception:
+            continue
+        sizes["/" + path.replace(os.sep, "/")] = [w, h]
+out = os.path.join(ROOT, "sizes.json")
+new = json.dumps(dict(sorted(sizes.items())), ensure_ascii=False, separators=(",", ":"))
+old = open(out, encoding="utf-8").read() if os.path.exists(out) else ""
+if new != old:
+    with open(out, "w", encoding="utf-8") as f:
+        f.write(new)
+    print(f"sizes.json updated ({len(sizes)} images)")
 sys.exit(0)
