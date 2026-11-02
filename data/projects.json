@@ -25,6 +25,46 @@
         }
       ],
       "cover": "/images/projects/未标题-2.jpg",
+      "looks": [
+        {
+          "name": "Look 1",
+          "images": [
+            "/images/projects/Look1-1.jpg",
+            "/images/projects/Look1-2.jpg"
+          ]
+        },
+        {
+          "name": "Look 2",
+          "images": [
+            "/images/projects/Look2-1.jpg",
+            "/images/projects/Look2-2.jpg"
+          ]
+        },
+        {
+          "name": "Look 3",
+          "images": [
+            "/images/projects/Look3-1.jpg",
+            "/images/projects/Look3-2.jpg",
+            "/images/projects/Look3-3.jpg"
+          ]
+        },
+        {
+          "name": "Look 4",
+          "images": [
+            "/images/projects/Look4-1.jpg",
+            "/images/projects/Look4-2.jpg",
+            "/images/projects/Look4-3.jpg"
+          ]
+        },
+        {
+          "name": "Others",
+          "images": [
+            "/images/projects/Detail-1.jpg",
+            "/images/projects/Detail-2.jpg",
+            "/images/projects/Detail-3.jpg"
+          ]
+        }
+      ],
       "summary": {
         "zh": "用橡皮圈、金属环和透明亚克力球编织成的可穿戴雕塑。",
         "en": "Wearable sculpture knitted from rubber bands, metal rings and clear acrylic spheres."
@@ -36,25 +76,7 @@
       "materials": {
         "zh": "橡皮圈、金属环、透明亚克力球",
         "en": "Rubber bands, metal rings, clear acrylic spheres"
-      },
-      "looks": [
-        {
-          "name": "Look 1",
-          "images": []
-        },
-        {
-          "name": "Look 2",
-          "images": []
-        },
-        {
-          "name": "Look 3",
-          "images": []
-        },
-        {
-          "name": "Look 4",
-          "images": []
-        }
-      ]
+      }
     },
     {
       "title": "陈迹·新渊",
