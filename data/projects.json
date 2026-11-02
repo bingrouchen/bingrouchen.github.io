@@ -32,7 +32,8 @@
             "/images/projects/Detail-1.jpg",
             "/images/projects/Detail-2.jpg",
             "/images/projects/Detail-3.jpg"
-          ]
+          ],
+          "hideHome": true
         },
         {
           "name": "Look 1",

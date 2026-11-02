@@ -194,7 +194,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.7</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.8</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -346,7 +346,12 @@
       /* 每个项目一组可左右翻的图片，下面是项目名称链接
          One swipeable row of images per project, with the project title link below */
       return feat.map(function (p) {
-          var pics = [p.cover].concat(p.images || []).filter(Boolean);
+          /* 首页图片：封面 + 每个 Look 的第一张 + 更多图片（勾了“不在首页显示”的 Look 跳过）
+             Home images: cover + the first photo of each look + more images (looks marked “hide from home” are skipped) */
+          var lookFirsts = (p.looks || []).filter(function (l) { return l && !l.hideHome; })
+            .map(function (l) { return (l.images || []).filter(Boolean)[0]; });
+          var pics = [p.cover].concat(lookFirsts, p.images || []).filter(Boolean)
+            .filter(function (x, i, a) { return a.indexOf(x) === i; });
           while (pics.length < 4) pics.push("");   /* 图片不够时用占位框补齐一排 / pad the row with placeholders */
           return '<section class="showcase">' +
             '<div class="slider"><div class="track">' + pics.map(function (src) {
