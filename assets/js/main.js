@@ -192,7 +192,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.5</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.6</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -303,7 +303,7 @@
       (list.length > 1 ? '<button class="lb-prev" aria-label="' + t(UI.prev) + '"></button><button class="lb-next" aria-label="' + t(UI.nextSlide) + '"></button>' : "");
     var pic = box.querySelector("img");
     var capEl = box.querySelector(".lb-cap");
-    function show(k) { i = (k + list.length) % list.length; pic.src = list[i].src; capEl.textContent = list[i].cap; }
+    function show(k) { i = (k + list.length) % list.length; pic.src = list[i].src; capEl.textContent = list[i].cap; capEl.parentNode.classList.toggle("has-cap", !!list[i].cap); }
     function close() { box.remove(); document.removeEventListener("keydown", key); document.body.classList.remove("no-scroll"); }
     function key(e) { if (e.key === "Escape") close(); if (e.key === "ArrowRight") show(i + 1); if (e.key === "ArrowLeft") show(i - 1); }
     box.onclick = function (e) {

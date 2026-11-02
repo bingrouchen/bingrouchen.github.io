@@ -415,7 +415,16 @@ body.no-scroll { overflow: hidden; }
 .pslide { height: calc((100cqw - (var(--per) - 1) * var(--col-gap)) / var(--per) * 1.5); cursor: zoom-in;
   transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease; }
 .pslide.missing { cursor: default; }
-.pcell figcaption { margin-top: 10px; font-size: 12px; line-height: 1.55; color: var(--ink); opacity: .8; }
+/* 图注：平时隐藏，鼠标移到照片上才浮现；和照片的距离 = 照片之间的距离
+   Caption: hidden until the photo is hovered; its distance from the photo = the gap between photos */
+.pcell { --ph-h: calc((100cqw - (var(--per) - 1) * var(--col-gap)) / var(--per) * 1.5); }
+.pcell figcaption {
+  margin-top: var(--col-gap); font-size: 12px; line-height: 1.55; color: var(--ink);
+  opacity: 0; transform: translateY(-4px); transition: opacity .35s ease, transform .45s cubic-bezier(.2,.7,.2,1);
+}
+/* 照片放大 6% 时底边下移 3%，图注跟着下移，间距保持不变 / the enlarged photo's bottom moves down 3%, so the caption follows to keep the gap */
+.ptrack .pcell:hover figcaption { opacity: .85; transform: translateY(calc(var(--ph-h) * .03)); }
+@media (hover: none) { .pcell figcaption { opacity: .85; transform: none; } }
 /* 鼠标停在一张上：这张浮起放大，其它的变淡 / hover: this one lifts and enlarges, the others fade */
 .ptrack:hover .pcell { opacity: .5; }
 .ptrack .pcell:hover { opacity: 1; }
@@ -424,8 +433,17 @@ body.no-scroll { overflow: hidden; }
 @media (hover: none) { .ptrack:hover .pcell { opacity: 1; } }
 /* 大图下的说明 / caption under the full-size image */
 .lb-fig { margin: 0; display: flex; flex-direction: column; align-items: center; max-width: 100%; max-height: 100%; }
-.lb-fig img { max-height: calc(100vh - 120px); }
-.lb-cap { margin-top: 12px; font-size: 13px; color: var(--ink); text-align: center; max-width: 640px; cursor: default; }
+.lb-fig img { max-height: calc(100vh - 80px); }
+.lb-cap { font-size: 13px; line-height: 1.7; color: var(--ink); cursor: default; }
+/* 有图注时：图片在左，文字在右，底部对齐 / with a caption: image left, text right, bottoms aligned */
+.lb-fig.has-cap { flex-direction: row; align-items: flex-end; gap: clamp(20px, 2.4vw, 36px); }
+.lb-fig.has-cap img { max-width: calc(100vw - 2 * clamp(16px, 4vw, 56px) - 300px); }
+.lb-fig.has-cap .lb-cap { width: 240px; flex: none; text-align: left; padding-bottom: 4px; }
+@media (max-width: 720px) {
+  .lb-fig.has-cap { flex-direction: column; align-items: center; }
+  .lb-fig.has-cap img { max-width: 100%; max-height: calc(100vh - 160px); }
+  .lb-fig.has-cap .lb-cap { width: auto; text-align: center; }
+}
 .lb-cap:empty { display: none; }
 .process-slider .arrow { top: 50%; }
 @media (hover: none) { .ptrack:hover .pslide { opacity: 1; } }
