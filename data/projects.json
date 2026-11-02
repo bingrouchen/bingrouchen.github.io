@@ -27,6 +27,14 @@
       "cover": "/images/projects/未标题-2.jpg",
       "looks": [
         {
+          "name": "Details",
+          "images": [
+            "/images/projects/Detail-1.jpg",
+            "/images/projects/Detail-2.jpg",
+            "/images/projects/Detail-3.jpg"
+          ]
+        },
+        {
           "name": "Look 1",
           "images": [
             "/images/projects/Look1-1.jpg",
@@ -55,22 +63,14 @@
             "/images/projects/Look4-2.jpg",
             "/images/projects/Look4-3.jpg"
           ]
-        },
-        {
-          "name": "Others",
-          "images": [
-            "/images/projects/Detail-1.jpg",
-            "/images/projects/Detail-2.jpg",
-            "/images/projects/Detail-3.jpg"
-          ]
         }
       ],
       "summary": {
         "zh": "用橡皮圈、金属环和透明亚克力球编织成的可穿戴雕塑。",
-        "en": "Wearable sculpture knitted from rubber bands, metal rings and clear acrylic spheres."
+        "en": "Wearable design knitted from rubber bands, metal rings and clear acrylic spheres."
       },
       "description": {
-        "zh": "NO ANGLE 其实是一种新的角度，打破了服装设计固有的定义，以及不同材料使用性质之间的分界线。\n\n这件作品以创意编织的方式，把普通橡皮圈、金属环和透明亚克力球这些“非服用”材料编织成可穿戴的服装。它既优雅又极具雕塑感，带来一种与众不同的美的体验，也为服装设计打开了新的可能。",
+        "zh": "在当代设计的创新上，对新材料的探索与应用尤为重要，然而，新材料不一定是高科技材料，它可以是我们日常生活中随处可见的普通材料。NO ANGLE其实是一种新的角度，打破了服装设计固有的定义和不同材料使用性质的分界线。这件作品以创意编织的方式把普通橡皮圈、金属环和透明亚克力球这些普通“非服用”材料编织成可穿戴的服装。它既优雅又极具雕塑感的，给人一种与众不同的美的体验，也为服装设计带来一种新的可能性。此外，这件服装所使用是一种适用于环形结构材料的编织工艺，这种编织工艺不会对编织材料造成任何伤害，也就是说，这件作品中所有的材料都是完好无损的，而且所有的材料都可以重复使用。",
         "en": "NO ANGLE is, in fact, a new angle, one that breaks the fixed definitions of fashion design and the boundaries between how different materials are used.\n\nThrough creative knitting, ordinary rubber bands, metal rings and clear acrylic spheres, materials never meant to be worn, are transformed into wearable garments. Both elegant and strongly sculptural, the work offers a distinctive experience of beauty and opens up new possibilities for fashion design."
       },
       "materials": {
