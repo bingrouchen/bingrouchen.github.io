@@ -89,7 +89,59 @@
           "en": ""
         },
         "photos": []
-      }
+      },
+      "sections": [
+        {
+          "title": "本科毕业秀（动态展）",
+          "title_en": "Graduation Show (Runway)",
+          "text": {
+            "zh": "",
+            "en": ""
+          },
+          "videos": [],
+          "photos": []
+        },
+        {
+          "title": "本科毕业秀（北京）",
+          "title_en": "Graduation Show, Beijing",
+          "text": {
+            "zh": "",
+            "en": ""
+          },
+          "videos": [],
+          "photos": []
+        },
+        {
+          "title": "本科毕业展（静态展）",
+          "title_en": "Graduation Exhibition (Static Display)",
+          "text": {
+            "zh": "",
+            "en": ""
+          },
+          "videos": [],
+          "photos": []
+        },
+        {
+          "title": "比赛",
+          "title_en": "Competitions",
+          "text": {
+            "zh": "",
+            "en": ""
+          },
+          "videos": [],
+          "photos": []
+        },
+        {
+          "title": "展览",
+          "title_en": "Exhibitions",
+          "text": {
+            "zh": "",
+            "en": ""
+          },
+          "videos": [],
+          "photos": []
+        }
+      ]
     },
     {
       "title": "陈迹·新渊",

@@ -122,8 +122,10 @@
   function videoEmbed(url) {
     if (!url) return "";
     var m, src = "";
-    if ((m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/))) src = "https://www.youtube-nocookie.com/embed/" + m[1];
+    if ((m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{6,})/))) src = "https://www.youtube-nocookie.com/embed/" + m[1];
     else if ((m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/))) src = "https://player.vimeo.com/video/" + m[1];
+    else if ((m = url.match(/bilibili\.com\/video\/(BV[\w]+)/i))) src = "https://player.bilibili.com/player.html?bvid=" + m[1] + "&autoplay=0&high_quality=1";
+    else if (/\.(mp4|webm|mov)(\?|$)/i.test(url)) return '<div class="video"><video src="' + esc(url) + '" controls playsinline preload="metadata"></video></div>';
     if (!src) return "";
     return '<div class="video"><iframe src="' + src + '" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="video"></iframe></div>';
   }
@@ -192,7 +194,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.6</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.7</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -267,27 +269,45 @@
 
   /* 创作过程：标题 + 文字 + 可左右滑动的照片，鼠标停在哪张，哪张就浮起放大
      Creative process: title + text + a sideways-scrolling strip; the photo under the mouse lifts and enlarges */
-  function processPart(p) {
-    var pr = p.process;
-    if (!pr) return "";
-    var pics = (pr.images || []).filter(Boolean);
-    var title = t(pr.title) || t(UI.process);
-    var text = t(pr.text);
-    /* 一屏 4 格：竖图占 1 格，横图占 2 格；每张下面可以有一句简短说明
-       Four slots per view: portraits take one slot, landscapes two; each photo can have a short caption */
-    var items = (pr.photos || []).filter(function (x) { return x && x.image; })
-      .concat(pics.map(function (src) { return { image: src }; }));
+  /* 可左右滑动的照片条（一屏 4 格，竖图 1 格、横图 2 格；鼠标悬停浮起并显示图注）
+     Sliding photo strip (4 slots per view; portrait = 1 slot, landscape = 2; hover lifts the photo and shows its caption) */
+  function photoStrip(items, title, placeholders) {
+    items = (items || []).filter(function (x) { return x && x.image; });
+    if (!items.length && !placeholders) return "";
     var slides = items.length ? items.map(function (x) {
       var wide = ratioOf(x.image) > 1.1, cap = t(x.caption);
       return '<figure class="pcell' + (wide ? " wide" : "") + '"><div class="pslide ph zoomable" data-caption="' + esc(cap) + '"><img src="' + esc(x.image) + '" alt="' + esc(cap || title) +
         '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>' +
         (cap ? "<figcaption>" + esc(cap) + "</figcaption>" : "") + "</figure>";
     }).join("") : [1, 2, 3, 4, 5, 6].map(function () { return '<figure class="pcell"><div class="pslide ph missing"></div></figure>'; }).join("");
-    return '<section class="process"><h2 class="look-name">' + esc(title) + "</h2>" +
-      (text ? '<div class="process-text"><div class="prose">' + paras(text) + "</div></div>" : "") +
-      '<div class="slider process-slider"><div class="track ptrack">' + slides + "</div>" +
+    return '<div class="slider process-slider"><div class="track ptrack">' + slides + "</div>" +
       '<button class="arrow prev" aria-label="' + t(UI.prev) + '"></button>' +
-      '<button class="arrow next-btn" aria-label="' + t(UI.nextSlide) + '"></button></div></section>';
+      '<button class="arrow next-btn" aria-label="' + t(UI.nextSlide) + '"></button></div>';
+  }
+  function textBlock(text) {
+    return text ? '<div class="process-text"><div class="prose">' + paras(text) + "</div></div>" : "";
+  }
+  /* 创作过程 / Creative process */
+  function processPart(p) {
+    var pr = p.process;
+    if (!pr) return "";
+    var title = t(pr.title) || t(UI.process);
+    var items = (pr.photos || []).concat((pr.images || []).filter(Boolean).map(function (src) { return { image: src }; }));
+    return '<section class="process"><h2 class="look-name">' + esc(title) + "</h2>" + textBlock(t(pr.text)) + photoStrip(items, title, true) + "</section>";
+  }
+  /* 更多板块（毕业秀、毕业展、比赛、展览……）：文字 + 视频 + 照片，没填的部分不显示
+     More sections (shows, exhibitions, competitions…): text + videos + photos; empty parts are hidden */
+  function extraSections(p) {
+    return (p.sections || []).map(function (sec) {
+      if (!sec || sec.hidden) return "";
+      var title = lang === "zh" ? (sec.title || sec.title_en) : (sec.title_en || sec.title);
+      var text = t(sec.text);
+      var vids = (sec.videos || []).map(function (v) { return videoEmbed(typeof v === "string" ? v : v && v.url); }).filter(Boolean);
+      var strip = photoStrip(sec.photos, title, false);
+      if (!text && !vids.length && !strip) return "";
+      return '<section class="process extra"><h2 class="look-name">' + esc(title || "") + "</h2>" + textBlock(text) +
+        (vids.length ? '<div class="videos' + (vids.length > 1 ? " two" : "") + '">' + vids.join("") + "</div>" : "") + strip + "</section>";
+    }).join("");
   }
 
   /* 点击图片看完整大图 / click an image to see it whole */
@@ -380,6 +400,7 @@
         '<div class="prose">' + paras(t(p.description)) + "</div></div>" +
         looks(p) +
         processPart(p) +
+        extraSections(p) +
         videoEmbed(p.video) +
         ((p.images || []).length ? '<div class="gallery">' + p.images.map(function (s) { return img(s, t(p.title), "zoomable"); }).join("") + "</div>" : "") +
         "</article>" +

@@ -151,6 +151,61 @@ content:
           - name: en
             label: English
             type: string
+    - name: sections
+      label: 更多板块 More sections
+      type: object
+      description: 显示在“创作过程”下面，例如毕业秀、毕业展、比赛、展览；文字、视频、照片都可以留空，全空的板块不显示；拖动可调整顺序 / Shown below the creative process, e.g. shows, exhibitions, competitions. Text, videos and photos are all optional; an empty
+        section is hidden. Drag to reorder.
+      list:
+        collapsible:
+          collapsed: true
+          summary: '{title} · {title_en}'
+      fields:
+      - name: title
+        label: 板块标题（中文）Title (Chinese)
+        type: string
+      - name: title_en
+        label: 板块标题（英文）Title (English)
+        type: string
+      - name: text
+        label: 文字 Text
+        type: object
+        fields:
+        - name: zh
+          label: 中文
+          type: text
+        - name: en
+          label: English
+          type: text
+        description: 空一行就是分段 / Leave a blank line between paragraphs.
+      - name: videos
+        label: 视频链接 Video links
+        type: string
+        list: true
+        description: 粘贴 YouTube、Vimeo 或 Bilibili 的视频链接，一行一个 / Paste a YouTube, Vimeo or Bilibili link, one per item.
+      - name: photos
+        label: 照片 Photos
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+        description: 照片可以左右滑动，鼠标悬停时显示说明 / Photos slide sideways; captions show on hover.
+        fields:
+        - name: image
+          label: 照片 Photo
+          type: image
+          options:
+            path: images/projects
+        - name: caption
+          label: 说明 Caption
+          type: object
+          fields:
+          - name: zh
+            label: 中文
+            type: string
+          - name: en
+            label: English
+            type: string
     - name: images
       label: 更多图片 More images
       type: image

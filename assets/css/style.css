@@ -452,3 +452,12 @@ body.no-scroll { overflow: hidden; }
   .process-text { grid-template-columns: 1fr; }
   .process-text .prose { grid-column: 1; }
 }
+
+/* ---------- 更多板块 / More sections ---------- */
+.process.extra { margin-top: clamp(64px, 9vw, 120px); }
+.process + .process { margin-top: clamp(64px, 9vw, 120px); }
+.videos { display: grid; gap: var(--col-gap); margin-bottom: clamp(28px, 4vw, 44px); }
+.videos.two { grid-template-columns: repeat(2, 1fr); }
+.videos .video { margin: 0; }
+.video video { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; }
+@media (max-width: 720px) { .videos.two { grid-template-columns: 1fr; } }
