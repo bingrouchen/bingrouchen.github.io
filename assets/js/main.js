@@ -192,7 +192,7 @@
     if (c.email) items.push('<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + "</a>");
     if (c.instagram) items.push('<a href="' + esc(c.instagram) + '" target="_blank" rel="noopener">Instagram</a>');
     if (c.linkedin) items.push('<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>');
-    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.3</i></span>' +
+    return "<span>© " + new Date().getFullYear() + " " + esc(S.name.en) + " " + esc(S.name.zh) + ' <i class="ver">v3.4</i></span>' +
       (items.length ? '<span class="links">' + items.join("") + "</span>" : "");
   }
 
@@ -273,11 +273,13 @@
     var pics = (pr.images || []).filter(Boolean);
     var title = t(pr.title) || t(UI.process);
     var text = t(pr.text);
+    /* 一屏 4 格：竖图占 1 格，横图占 2 格，所以两端总是对齐
+       Four slots per view: portraits take one slot, landscapes two, so both ends always line up */
     var slides = pics.length ? pics.map(function (src) {
-      var r = ratioOf(src);
-      return '<div class="pslide ph zoomable" style="aspect-ratio:' + r.toFixed(4) + '"><img src="' + esc(src) + '" alt="' + esc(title) +
+      var wide = ratioOf(src) > 1.1;
+      return '<div class="pslide ph zoomable' + (wide ? " wide" : "") + '"><img src="' + esc(src) + '" alt="' + esc(title) +
         '" loading="lazy" onerror="this.parentNode.classList.add(\'missing\');this.remove()"></div>';
-    }).join("") : [1, 2, 3, 4, 5, 6].map(function () { return '<div class="pslide ph missing" style="aspect-ratio:2/3"></div>'; }).join("");
+    }).join("") : [1, 2, 3, 4, 5, 6].map(function () { return '<div class="pslide ph missing"></div>'; }).join("");
     return '<section class="process"><h2 class="look-name">' + esc(title) + "</h2>" +
       (text ? '<div class="process-text"><div class="prose">' + paras(text) + "</div></div>" : "") +
       '<div class="slider process-slider"><div class="track ptrack">' + slides + "</div>" +
@@ -443,7 +445,7 @@
     document.querySelectorAll(".slider").forEach(function (sl) {
       var track = sl.querySelector(".track"), prev = sl.querySelector(".prev"), next = sl.querySelector(".next-btn");
       function step(dir) {
-        var slide = track.querySelector(".slide, .pslide");
+        var slide = track.querySelector(".slide, .pslide:not(.wide)");
         var w = slide ? slide.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0) : track.clientWidth;
         track.scrollBy({ left: dir * w, behavior: "smooth" });
       }
@@ -455,6 +457,13 @@
         next.disabled = track.scrollLeft >= max;
       }
       track.onscroll = update; window.addEventListener("resize", update); update();
+      /* 靠边的照片向内放大，不会被切掉 / photos at the edges grow inward so they aren't clipped */
+      track.querySelectorAll(".pslide").forEach(function (el) {
+        el.onmouseenter = function () {
+          var a = el.getBoundingClientRect(), b = track.getBoundingClientRect();
+          el.style.transformOrigin = a.left - b.left < 4 ? "left center" : b.right - a.right < 4 ? "right center" : "center";
+        };
+      });
     });
   }
 
